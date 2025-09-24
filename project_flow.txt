@@ -1,0 +1,418 @@
+Skip navigation
+Multi-Agent ML System for Vehicle Damage Detection
+Background
+Insurance companies process thousands of vehicle damage claims daily, requiring rapid and accurate damage assessment. Your task is to build a multi-agent system that orchestrates multiple ML models to detect, classify, and annotate vehicle damage from images.
+
+Business Context
+Current challenges in vehicle damage assessment:
+
+Manual inspection 
+
+Initial estimates are inaccurate
+
+Inconsistent damage classification across adjusters
+
+Fraud through altered or misrepresented images costs millions annually
+
+Your system should:
+
+Process damage assessment
+
+Achieve 85%+ accuracy in damage detection
+
+Provide explainable, annotated outputs
+
+Flag potentially fraudulent or altered images
+
+Technical Challenge
+Core Multi-Agent ML System 
+Build a system with 4 specialized ML agents coordinated by an orchestrator:
+
+1. Image Quality Agent
+
+class ImageQualityAgent:
+    def process(self, image):
+        # Returns quality score and enhancement recommendations
+        return {
+            "quality_score": 0.85,
+            "issues": ["low_light", "blur"],
+            "enhanced_image": enhanced_img,
+            "processable": True
+        }
+Responsibilities:
+
+Assess image quality (blur, lighting, resolution)
+
+Enhance images when possible
+
+Reject unprocessable images
+
+Detect potential image manipulation
+
+2. Damage Detection Agent
+class DamageDetectionAgent:
+    def process(self, image):
+        # Returns bounding boxes of damaged areas
+        return {
+            "detections": [
+                {
+                    "bbox": [x1, y1, x2, y2],
+                    "confidence": 0.92,
+                    "damage_type": "dent"
+                }
+            ],
+            "total_damage_area": 15.5  # percentage
+        }
+Responsibilities:
+
+Identify all damaged areas using object detection
+
+Classify damage types (dent, scratch, crack, missing part)
+
+Calculate damaged surface area
+
+Return confidence scores
+
+3. Part Identification Agent
+class PartIdentificationAgent:
+    def process(self, image, damage_bboxes):
+        # Maps damage to specific car parts
+        return {
+            "damaged_parts": [
+                {
+                    "part_name": "front_bumper",
+                    "part_id": "FB-001",
+                    "damage_percentage": 30,
+                    "bbox": [x1, y1, x2, y2]
+                }
+            ]
+        }
+Responsibilities:
+
+Identify which car parts are damaged
+
+Map damage locations to part taxonomy
+
+Estimate damage percentage per part
+
+Handle multiple angles/views
+
+4. Severity Assessment Agent
+class SeverityAssessmentAgent:
+    def process(self, damage_data, part_data):
+        # Calculates severity and repair estimates
+        return {
+            "overall_severity": "moderate",
+            "severity_score": 6.5,
+            "repair_category": "body_shop_required",
+            "estimated_cost_range": [2000, 3500],
+            "repair_time_days": 3
+        }
+Responsibilities:
+
+Classify damage severity (minor/moderate/severe/total loss)
+
+Estimate repair costs
+
+Recommend repair approach
+
+Flag safety concerns
+
+5. Orchestrator Agent
+class DamageAssessmentOrchestrator:
+    def process_claim(self, images):
+        # Coordinates all agents
+        # Implements routing logic
+        # Handles multi-image correlation
+        # Returns comprehensive assessment
+Responsibilities:
+
+Route images through appropriate agent pipeline
+
+Merge results from multiple images/angles
+
+Implement confidence-based workflows
+
+Handle model failures gracefully
+
+Simple Dashboard (20% effort)
+Build a web interface that displays:
+
+Core Features:
+
+Image upload interface (single or multiple images)
+
+Real-time processing status for each agent
+
+Annotated output image with damage boxes and labels
+
+Damage report summary
+
+Visualization Requirements:
+
+Show original and annotated images side-by-side
+
+Display confidence scores for each detection
+
+Color-code damage severity
+
+Show processing pipeline progress
+
+Technical Requirements
+ML Model Integration
+You can use any combination of:
+
+Pre-trained Models (Recommended):
+
+# Example integrations
+
+from transformers import pipeline
+
+import torch
+
+import cv2
+
+from ultralytics import YOLO
+
+# Option 1: Hugging Face models
+detector = pipeline("object-detection", model="facebook/detr-resnet-50")
+
+# Option 2: YOLO for damage detection
+model = YOLO("yolov8n.pt")  # Can use pre-trained or custom
+
+# Option 3: Custom CNN for classification
+import torchvision.models as models
+model = models.resnet50(pretrained=True)
+Mock Models (Acceptable):
+
+Rule-based detection for proof of concept
+
+Synthetic confidence scores
+
+Simulated processing delays
+
+Input/Output Specification
+Input Format:
+
+{
+    "claim_id": "CLM-2024-001",
+    "images": [
+        {
+            "image_id": "IMG-001",
+            "image_path": "path/to/image.jpg",
+            "angle": "front_left",
+            "timestamp": "2024-01-15T10:30:00Z"
+        }
+    ],
+    "vehicle_info": {
+        "make": "Toyota",
+        "model": "Camry",
+        "year": 2022,
+        "color": "silver"
+    }
+}
+Output Format:
+
+{
+    "claim_id": "CLM-2024-001",
+    "assessment_result": {
+        "quality_check": {
+            "passed": true,
+            "average_quality": 0.85
+        },
+        "damage_summary": {
+            "total_damages_found": 3,
+            "affected_parts": ["front_bumper", "left_headlight", "hood"],
+            "overall_severity": "moderate",
+            "confidence_score": 0.88
+        },
+        "annotations": [
+            {
+                "image_id": "IMG-001",
+                "detections": [
+                    {
+                        "damage_type": "dent",
+                        "part": "front_bumper",
+                        "bbox": [120, 340, 450, 520],
+                        "confidence": 0.92,
+                        "severity": "moderate"
+                    }
+                ]
+            }
+        ],
+        "repair_estimate": {
+            "cost_range": [2500, 3500],
+            "repair_days": 4,
+            "category": "moderate_body_work"
+        },
+        "fraud_indicators": {
+            "image_manipulation_detected": false,
+            "consistency_score": 0.95
+        }
+    },
+    "processing_time_ms": 2850,
+    "agent_metrics": {
+        "image_quality": 250,
+        "damage_detection": 1200,
+        "part_identification": 800,
+        "severity_assessment": 600
+    }
+}
+Provided Resources
+1. Sample Dataset Structure
+
+
+Damaged Vehicle Sample Dataset - 
+https://drive.google.com/drive/folders/1tDPSu_Z-uI9p8oQiyoklUE70h8TF8fc9?usp=sharing 
+
+
+
+# dataset_info.py
+
+dataset = {
+  // shared in drive
+}
+
+# Car parts taxonomy
+
+CAR_PARTS = {
+    "exterior": [
+        "front_bumper", "rear_bumper", "hood", "trunk",
+        "left_door", "right_door", "left_fender", "right_fender",
+        "windshield", "rear_window", "side_windows",
+        "left_headlight", "right_headlight", "tail_lights"
+    ],
+    "wheels": ["front_left_wheel", "front_right_wheel", "rear_left_wheel", "rear_right_wheel"]
+}
+
+# Damage categories
+
+DAMAGE_TYPES = ["scratch", "dent", "crack", "shatter", "missing", "bent", "paint_damage"]
+
+# Severity mapping
+
+SEVERITY_RULES = {
+    "minor": {"cost_range": [100, 500], "repair_days": 1},
+    "moderate": {"cost_range": [500, 3000], "repair_days": 3},
+    "major": {"cost_range": [3000, 10000], "repair_days": 7},
+    "severe": {"cost_range": [10000, 30000], "repair_days": 14}
+}
+2. Evaluation Metrics
+# Your system will be evaluated on:
+metrics = {
+    "detection_accuracy": "Percentage of damages correctly identified",
+    "localization_iou": "Intersection over Union for bounding boxes", 
+    "part_classification": "Accuracy of part identification",
+    "severity_accuracy": "Correct severity classification rate",
+    "processing_speed": "Average time per image",
+    "multi_image_consistency": "Consistency across multiple angles"
+}
+
+
+Deliverables
+1. Working System (70% weight)
+Functional multi-agent ML pipeline
+
+At least 4 agents with orchestration
+
+Process sample images end-to-end
+
+Basic annotation output
+
+2. Dashboard (15% weight)
+Image upload and display
+
+Show annotations on images
+
+Display processing pipeline status
+
+Summary report view
+
+3. Documentation (15% weight)
+Architecture diagram showing agent interaction
+
+Model selection justification (300 words)
+
+README with setup instructions
+
+Performance metrics on test set
+
+Demo Video 
+
+Evaluation Criteria
+ML Implementation (40%)
+Appropriate model selection
+
+Effective use of ML techniques
+
+Handling of edge cases
+
+Performance optimization
+
+Agent Orchestration (30%)
+Clear agent responsibilities
+
+Efficient routing logic
+
+Parallel processing where appropriate
+
+Graceful failure handling
+
+System Design (20%)
+Scalable architecture
+
+Clean code organization
+
+Modular design
+
+Extensibility
+
+Results Quality (10%)
+Detection accuracy
+
+Annotation clarity
+
+Processing speed
+
+Report usefulness
+
+Bonus Challenges (Optional)
+Multi-View Correlation: Correlate damage across multiple angles for 3D understanding
+
+Fraud Detection: Implement image manipulation detection
+
+Active Learning: Identify low-confidence predictions for human review
+
+Model Ensemble: Combine multiple models for improved accuracy
+
+Explainable AI: Generate explanations for severity assessments
+
+Important Notes
+Model Choice Flexibility: Use any ML framework (PyTorch, TensorFlow, Scikit-learn)
+
+Pre-trained Models:
+
+Mock When Needed: If ML models are slow, implement mock versions for demonstration
+
+Focus on Orchestration: The coordination logic is more important than model accuracy
+
+Real-world Constraints: Consider memory usage and processing time
+
+Success Metrics
+A successful submission will:
+
+Process images in under 5 seconds per image
+
+Achieve 80%+ detection rate on obvious damages
+
+Successfully annotate detected damages on output images
+
+Handle multiple images per claim
+
+Demonstrate intelligent agent coordination
+
+
+
+Documents
+MockMLModels
+ Outline
