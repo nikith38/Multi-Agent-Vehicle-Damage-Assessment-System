@@ -327,9 +327,13 @@ class ImageEnhancementAgent:
             
             # Clean up intermediate files, keeping only the final result
             if len(self.intermediate_files) > 0:
+                if self.enable_logging:
+                    self.logger.info(f"Intermediate files before cleanup: {self.intermediate_files}")
+                    self.logger.info(f"Final output file to keep: {final_output_file}")
                 self._cleanup_intermediate_files(keep_final=final_output_file)
                 if self.enable_logging:
                     self.logger.info(f"Final enhanced image: {final_output_file}")
+                    self.logger.info(f"Remaining files after cleanup: {self.intermediate_files}")
             
             # Generate final output JSON
             self._generate_final_output_json(final_output_file, quality_score)
