@@ -1,20 +1,119 @@
-2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - 
+2025-09-25 02:14:35 - ImageEnhancementAgent - INFO - 
 ================================================================================
-2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - STARTING IMAGE ENHANCEMENT SESSION
-2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - Session Start Time: 2025-09-25 01:54:09
-2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - Image Path: tests/front_left-18.jpeg
-2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - Request: Analyze the image quality of 'tests/front_left-18.jpeg' and enhance it as needed. First assess the image metrics, then apply appropriate enhancements based on the quality issues found.
-2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - ================================================================================
-2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - 
+2025-09-25 02:14:35 - ImageEnhancementAgent - INFO - STARTING IMAGE ENHANCEMENT SESSION
+2025-09-25 02:14:35 - ImageEnhancementAgent - INFO - Session Start Time: 2025-09-25 02:14:33
+2025-09-25 02:14:35 - ImageEnhancementAgent - INFO - Image Path: tests/front_left-18.jpeg
+2025-09-25 02:14:35 - ImageEnhancementAgent - INFO - Request: Analyze the image quality of 'tests/front_left-18.jpeg' and enhance it as needed. First assess the image metrics, then apply appropriate enhancements based on the quality issues found.
+2025-09-25 02:14:35 - ImageEnhancementAgent - INFO - ================================================================================
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Tracking intermediate file: tests/front_left-18_sharpened.jpeg
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Tracking intermediate file: tests/front_left-18_exposure_adjusted.jpeg
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Tracking intermediate file: tests/front_left-18_contrast_enhanced.jpeg
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - 
 ================================================================================
-2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - EXECUTION SUMMARY
-2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - Total Execution Time: 7.263s
-2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - Total Tool Calls: 1
-2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - 
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - EXECUTION SUMMARY
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Total Execution Time: 20.221s
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Total Tool Calls: 4
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Used Tools: ['adjust_exposure', 'assess_image_metrics', 'enhance_contrast', 'sharpen_image']
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - 
 --- TOOL CALL 1 ---
-2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - Tool: assess_image_metrics
-2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - Input: `{"image_path": "tests/front_left-18.jpeg"}`
-2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - Output: {"is_processable":true,"overall_metrics":{"blur_score":588.8728223472104,"brightness_score":30.88302989969136,"contrast_score":1.0,"noise_level":0.1442515451713437,"overall_score":0.8230212799394276},"region_metrics":{"center":{"blur_score":275.1846498842593,"brightness_score":15.375470679012345,"contrast_score":1.0,"noise_level":0.1524038542288343,"overall_score":0.8263012107456651},"edges":{"blur_score":1460.7793628682682,"brightness_score":75.21401620370371,"contrast_score":1.0,"noise_level":1.1102230246251565e-16,"overall_score":1.0},"corners":{"blur_score":65.23344272300187,"brightness_score":3.1554484953703703,"contrast_score":1.0,"noise_level":0.34024809028463254,"overall_score":0.5493533728329756},"weighted_average":{"blur_score":588.8728223472104,"brightness_score":30.88302989969136,"contrast_score":1.0,"noise_level":0.1442515451713437,"overall_score":0.8230212799394276}},"quality_issues":[],"recommendations":["Image quality is acceptable for processing"],"processing_time":2.9990079402923584,"image_properties":{"width":1920,"height":1080,"channels":3,"total_pixels":2073600,"aspect_ratio":1.7777777777777777,"file_size":789258}}
-2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - 
-Final Answer: The image quality of 'tests/front_left-18.jpeg' is acceptable for processing, and no enhancements are needed.
-2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - ================================================================================
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Tool: assess_image_metrics
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Input: '{"image_path": "tests/front_left-18.jpeg"}'  
+
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Output: {"is_processable":true,"overall_metrics":{"blur_score":588.8728223472104,"brightness_score":30.88302989969136,"contrast_score":1.0,"noise_level":0.1442515451713437,"overall_score":0.8230212799394276},"region_metrics":{"center":{"blur_score":275.1846498842593,"brightness_score":15.375470679012345,"contrast_score":1.0,"noise_level":0.1524038542288343,"overall_score":0.8263012107456651},"edges":{"blur_score":1460.7793628682682,"brightness_score":75.21401620370371,"contrast_score":1.0,"noise_level":1.1102230246251565e-16,"overall_score":1.0},"corners":{"blur_score":65.23344272300187,"brightness_score":3.1554484953703703,"contrast_score":1.0,"noise_level":0.34024809028463254,"overall_score":0.5493533728329756},"weighted_average":{"blur_score":588.8728223472104,"brightness_score":30.88302989969136,"contrast_score":1.0,"noise_level":0.1442515451713437,"overall_score":0.8230212799394276}},"quality_issues":[],"recommendations":["Image quality is acceptable for processing"],"processing_time":2.574282646179199,"image_properties":{"width":1920,"height":1080,"channels":3,"total_pixels":2073600,"aspect_ratio":1.7777777777777777,"file_size":789258}}
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - 
+--- TOOL CALL 2 ---
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Tool: sharpen_image
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Input: '{"image_path": "tests/front_left-18.jpeg", "output_path": "tests/front_left-18_sharpened.jpeg", "sharpening_method": "unsharp_mask", "strength": 1.5, "radius": 1.0, "threshold": 0}'  
+
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Output: {'success': True, 'output_path': 'tests/front_left-18_sharpened.jpeg', 'method': 'unsharp_mask', 'strength': 1.5, 'radius': 1.0, 'threshold': 0, 'message': 'Image sharpened successfully using unsharp_mask method'}
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - 
+--- TOOL CALL 3 ---
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Tool: adjust_exposure
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Input: '{"image_path": "tests/front_left-18_sharpened.jpeg", "output_path": "tests/front_left-18_exposure_adjusted.jpeg", "exposure_compensation": 0.5, "gamma_correction": 1.2, "auto_adjustment": true, "highlight_preservation": true, "shadow_preservation": true}'  
+
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Output: {'success': True, 'output_path': 'tests/front_left-18_exposure_adjusted.jpeg', 'exposure_compensation': 0.5, 'gamma_correction': 1.2, 'auto_adjust': False, 'preserve_highlights': True, 'preserve_shadows': True, 'message': 'Exposure adjusted successfully with 0.50 stops compensation'}
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - 
+--- TOOL CALL 4 ---
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Tool: enhance_contrast
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Input: '{"image_path": "tests/front_left-18_exposure_adjusted.jpeg", "output_path": "tests/front_left-18_contrast_enhanced.jpeg", "contrast_method": "CLAHE", "strength": 1.5, "CLAHE_parameters": {"clip_limit": 2.0, "tile_grid_size": [8, 8]}}'  
+
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Output: {'success': True, 'output_path': 'tests/front_left-18_contrast_enhanced.jpeg', 'method': 'adaptive_histogram', 'strength': 1.5, 'clip_limit': 2.0, 'tile_grid_size': 8, 'preserve_color': True, 'message': 'Contrast enhanced successfully using adaptive_histogram method'}
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - 
+Final Answer: The image quality of 'tests/front_left-18.jpeg' has been successfully enhanced through sharpening, exposure adjustment, and contrast enhancement. The final output image is saved as 'tests/front_left-18_contrast_enhanced.jpeg'.
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - ================================================================================
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Cleaned up intermediate file: tests/front_left-18_sharpened.jpeg
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Cleaned up intermediate file: tests/front_left-18_exposure_adjusted.jpeg
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Cleaned up 2 intermediate files
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Final enhanced image: tests/front_left-18_contrast_enhanced.jpeg
+2025-09-25 02:14:55 - ImageEnhancementAgent - INFO - Final output JSON saved: tests/front_left-18_contrast_enhanced_output.json
+2025-09-25 02:16:20 - ImageEnhancementAgent - INFO - 
+================================================================================
+2025-09-25 02:16:20 - ImageEnhancementAgent - INFO - STARTING IMAGE ENHANCEMENT SESSION
+2025-09-25 02:16:20 - ImageEnhancementAgent - INFO - Session Start Time: 2025-09-25 02:16:18
+2025-09-25 02:16:20 - ImageEnhancementAgent - INFO - Image Path: tests/front_left-18.jpeg
+2025-09-25 02:16:20 - ImageEnhancementAgent - INFO - Request: Analyze the image quality of 'tests/front_left-18.jpeg' and enhance it as needed. First assess the image metrics, then apply appropriate enhancements based on the quality issues found.
+2025-09-25 02:16:20 - ImageEnhancementAgent - INFO - ================================================================================
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Tracking intermediate file: tests/front_left-18_sharpened.jpeg
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Tracking intermediate file: tests/front_left-18_final.jpeg
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - 
+================================================================================
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - EXECUTION SUMMARY
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Total Execution Time: 17.433s
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Total Tool Calls: 3
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Used Tools: ['adjust_exposure', 'assess_image_metrics', 'sharpen_image']
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - 
+--- TOOL CALL 1 ---
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Tool: assess_image_metrics
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Input: '{"image_path": "tests/front_left-18.jpeg"}'  
+
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Output: {"is_processable":true,"overall_metrics":{"blur_score":588.8728223472104,"brightness_score":30.88302989969136,"contrast_score":1.0,"noise_level":0.1442515451713437,"overall_score":0.8230212799394276},"region_metrics":{"center":{"blur_score":275.1846498842593,"brightness_score":15.375470679012345,"contrast_score":1.0,"noise_level":0.1524038542288343,"overall_score":0.8263012107456651},"edges":{"blur_score":1460.7793628682682,"brightness_score":75.21401620370371,"contrast_score":1.0,"noise_level":1.1102230246251565e-16,"overall_score":1.0},"corners":{"blur_score":65.23344272300187,"brightness_score":3.1554484953703703,"contrast_score":1.0,"noise_level":0.34024809028463254,"overall_score":0.5493533728329756},"weighted_average":{"blur_score":588.8728223472104,"brightness_score":30.88302989969136,"contrast_score":1.0,"noise_level":0.1442515451713437,"overall_score":0.8230212799394276}},"quality_issues":[],"recommendations":["Image quality is acceptable for processing"],"processing_time":2.797260046005249,"image_properties":{"width":1920,"height":1080,"channels":3,"total_pixels":2073600,"aspect_ratio":1.7777777777777777,"file_size":789258}}
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - 
+--- TOOL CALL 2 ---
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Tool: sharpen_image
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Input: '{"image_path": "tests/front_left-18.jpeg", "output_path": "tests/front_left-18_sharpened.jpeg", "sharpening_method": "unsharp_mask", "strength": 1.5, "radius": 1.0, "threshold": 0}'  
+
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Output: {'success': True, 'output_path': 'tests/front_left-18_sharpened.jpeg', 'method': 'unsharp_mask', 'strength': 1.5, 'radius': 1.0, 'threshold': 0, 'message': 'Image sharpened successfully using unsharp_mask method'}
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - 
+--- TOOL CALL 3 ---
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Tool: adjust_exposure
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Input: '{"image_path": "tests/front_left-18_sharpened.jpeg", "output_path": "tests/front_left-18_final.jpeg", "exposure_compensation": 0.5, "gamma_correction": 1.2, "auto_adjustment": true, "highlight_preservation": true, "shadow_preservation": true}'  
+
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Output: {'success': True, 'output_path': 'tests/front_left-18_final.jpeg', 'exposure_compensation': 0.5, 'gamma_correction': 1.2, 'auto_adjust': False, 'preserve_highlights': True, 'preserve_shadows': True, 'message': 'Exposure adjusted successfully with 0.50 stops compensation'}
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - 
+Final Answer: The image quality of 'tests/front_left-18.jpeg' has been enhanced by sharpening it and adjusting the exposure. The final enhanced image is saved as 'tests/front_left-18_final.jpeg'.
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - ================================================================================
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Cleaned up intermediate file: tests/front_left-18_sharpened.jpeg
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Cleaned up 1 intermediate files
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Final enhanced image: tests/front_left-18_final.jpeg
+2025-09-25 02:16:37 - ImageEnhancementAgent - INFO - Final output JSON saved: tests/front_left-18_final_output.json
+2025-09-25 02:21:24 - ImageEnhancementAgent - INFO - 
+================================================================================
+2025-09-25 02:21:24 - ImageEnhancementAgent - INFO - STARTING IMAGE ENHANCEMENT SESSION
+2025-09-25 02:21:24 - ImageEnhancementAgent - INFO - Session Start Time: 2025-09-25 02:21:22
+2025-09-25 02:21:24 - ImageEnhancementAgent - INFO - Image Path: tests/front_left-18.jpeg
+2025-09-25 02:21:24 - ImageEnhancementAgent - INFO - Request: Analyze the image quality of 'tests/front_left-18.jpeg' and enhance it as needed. First assess the image metrics, then apply appropriate enhancements based on the quality issues found.
+2025-09-25 02:21:24 - ImageEnhancementAgent - INFO - ================================================================================
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Tracking intermediate file: tests/front_left-18_enhanced.jpeg
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - 
+================================================================================
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - EXECUTION SUMMARY
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Total Execution Time: 10.777s
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Total Tool Calls: 2
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Used Tools: ['adjust_exposure', 'assess_image_metrics']
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - 
+--- TOOL CALL 1 ---
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Tool: assess_image_metrics
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Input: `{"image_path": "tests/front_left-18.jpeg"}`
+
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Output: {"is_processable":true,"overall_metrics":{"blur_score":588.8728223472104,"brightness_score":30.88302989969136,"contrast_score":1.0,"noise_level":0.1442515451713437,"overall_score":0.8230212799394276},"region_metrics":{"center":{"blur_score":275.1846498842593,"brightness_score":15.375470679012345,"contrast_score":1.0,"noise_level":0.1524038542288343,"overall_score":0.8263012107456651},"edges":{"blur_score":1460.7793628682682,"brightness_score":75.21401620370371,"contrast_score":1.0,"noise_level":1.1102230246251565e-16,"overall_score":1.0},"corners":{"blur_score":65.23344272300187,"brightness_score":3.1554484953703703,"contrast_score":1.0,"noise_level":0.34024809028463254,"overall_score":0.5493533728329756},"weighted_average":{"blur_score":588.8728223472104,"brightness_score":30.88302989969136,"contrast_score":1.0,"noise_level":0.1442515451713437,"overall_score":0.8230212799394276}},"quality_issues":[],"recommendations":["Image quality is acceptable for processing"],"processing_time":2.6990041732788086,"image_properties":{"width":1920,"height":1080,"channels":3,"total_pixels":2073600,"aspect_ratio":1.7777777777777777,"file_size":789258}}
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - 
+--- TOOL CALL 2 ---
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Tool: adjust_exposure
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Input: `{"image_path": "tests/front_left-18.jpeg", "output_path": "tests/front_left-18_enhanced.jpeg", "exposure_compensation": 1.5, "gamma_correction": 1.0, "auto_adjustment": true, "highlight_preservation": true, "shadow_preservation": true}`
+
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Output: {'success': True, 'output_path': 'tests/front_left-18_enhanced.jpeg', 'exposure_compensation': 1.5, 'gamma_correction': 1.0, 'auto_adjust': False, 'preserve_highlights': True, 'preserve_shadows': True, 'message': 'Exposure adjusted successfully with 1.50 stops compensation'}
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - 
+Final Answer: The image quality of 'tests/front_left-18.jpeg' was assessed, revealing acceptable overall quality but low brightness in certain areas. The brightness was enhanced through exposure adjustment, resulting in the improved image saved as 'tests/front_left-18_enhanced.jpeg'.
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - ================================================================================
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Final enhanced image: tests/front_left-18_enhanced.jpeg
+2025-09-25 02:21:35 - ImageEnhancementAgent - INFO - Final output JSON saved: tests/front_left-18_enhanced_output.json

@@ -1,1 +1,16 @@
 .env
+
+# Temporary image files
+*_sharpened.*
+*_denoised.*
+*_exposure.*
+*_contrast.*
+*_enhanced.*
+
+# Log files
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
