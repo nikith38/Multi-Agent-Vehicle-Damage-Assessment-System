@@ -1,0 +1,28 @@
+# Core LangChain dependencies
+langchain>=0.1.0
+langchain-openai>=0.1.0
+langchain-community>=0.0.20
+langchainhub>=0.1.14
+
+# Image processing libraries
+opencv-python>=4.8.0
+Pillow>=10.0.0
+numpy>=1.24.0
+scipy>=1.11.0
+scikit-image>=0.21.0
+
+# Wavelet processing for noise detection
+PyWavelets>=1.4.1
+
+# Core Python dependencies
+pydantic>=2.0.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Optional: For enhanced functionality
+matplotlib>=3.7.0  # For visualization if needed
+tqdm>=4.65.0       # For progress bars
+
+# Development and testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0

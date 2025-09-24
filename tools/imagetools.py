@@ -9,8 +9,9 @@ import numpy as np
 import asyncio
 import concurrent.futures
 import functools
+import os
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any, Literal
 from pydantic import BaseModel, Field
 from langchain.tools import tool
 import json
@@ -18,6 +19,7 @@ import time
 import pywt
 import logging
 from scipy import ndimage
+from PIL import Image, ImageEnhance, ImageFilter
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -632,8 +634,21 @@ def assess_image_metrics(input_data: str) -> str:
     start_time = time.time()
     
     try:
+        # Clean input data - remove quotes, backticks and whitespace that agent might add
+        cleaned_input = input_data.strip()
+        
+        # Remove backticks if present
+        if cleaned_input.startswith('`') and cleaned_input.endswith('`'):
+            cleaned_input = cleaned_input[1:-1]
+        
+        # Remove single quotes if present (agent sometimes wraps JSON in single quotes)
+        if cleaned_input.startswith("'") and cleaned_input.endswith("'"):
+            cleaned_input = cleaned_input[1:-1]
+        
+        cleaned_input = cleaned_input.strip()  # Remove any remaining whitespace
+        
         # Parse input
-        input_dict = json.loads(input_data)
+        input_dict = json.loads(cleaned_input)
         input_model = ImageMetricsInput(**input_dict)
         
         # Run async assessment
@@ -686,3 +701,668 @@ def assess_image_metrics(input_data: str) -> str:
             "processing_time": time.time() - start_time,
             "image_properties": {"error": str(e)}
         })
+
+
+# Additional Pydantic models for image processing tools
+class SharpenImageInput(BaseModel):
+    """Input model for image sharpening tool"""
+    image_path: str = Field(description="Path to the input image file")
+    output_path: Optional[str] = Field(default=None, description="Path for output image (optional, defaults to input_sharpened.jpg)")
+    method: Literal["unsharp_mask", "laplacian", "high_pass"] = Field(
+        default="unsharp_mask", 
+        description="Sharpening method: unsharp_mask (gentle), laplacian (moderate), high_pass (strong)"
+    )
+    strength: float = Field(
+        default=1.0, 
+        ge=0.1, 
+        le=3.0, 
+        description="Sharpening strength (0.1-3.0, where 1.0 is normal)"
+    )
+    radius: float = Field(
+        default=1.0, 
+        ge=0.5, 
+        le=5.0, 
+        description="Sharpening radius in pixels (0.5-5.0)"
+    )
+    threshold: int = Field(
+        default=0, 
+        ge=0, 
+        le=255, 
+        description="Threshold for edge detection (0-255, 0 means all pixels)"
+    )
+
+
+class DenoiseImageInput(BaseModel):
+    """Input model for image denoising tool"""
+    image_path: str = Field(description="Path to the input image file")
+    output_path: Optional[str] = Field(default=None, description="Path for output image (optional, defaults to input_denoised.jpg)")
+    method: Literal["gaussian", "bilateral", "non_local_means", "median"] = Field(
+        default="bilateral", 
+        description="Denoising method: gaussian (fast), bilateral (edge-preserving), non_local_means (best quality), median (salt-pepper noise)"
+    )
+    strength: float = Field(
+        default=1.0, 
+        ge=0.1, 
+        le=3.0, 
+        description="Denoising strength (0.1-3.0, where 1.0 is normal)"
+    )
+    preserve_edges: bool = Field(
+        default=True, 
+        description="Whether to preserve edges during denoising"
+    )
+    kernel_size: int = Field(
+        default=5, 
+        ge=3, 
+        le=15, 
+        description="Kernel size for filtering (3-15, must be odd)"
+    )
+
+
+class AdjustExposureInput(BaseModel):
+    """Input model for exposure adjustment tool"""
+    image_path: str = Field(description="Path to the input image file")
+    output_path: Optional[str] = Field(default=None, description="Path for output image (optional, defaults to input_exposure.jpg)")
+    exposure_compensation: float = Field(
+        default=0.0, 
+        ge=-2.0, 
+        le=2.0, 
+        description="Exposure compensation in stops (-2.0 to +2.0, where 0 is no change)"
+    )
+    gamma_correction: float = Field(
+        default=1.0, 
+        ge=0.3, 
+        le=3.0, 
+        description="Gamma correction (0.3-3.0, where 1.0 is no change, <1 brightens, >1 darkens)"
+    )
+    auto_adjust: bool = Field(
+        default=False, 
+        description="Whether to automatically adjust exposure based on histogram analysis"
+    )
+    preserve_highlights: bool = Field(
+        default=True, 
+        description="Whether to preserve highlight details during adjustment"
+    )
+    preserve_shadows: bool = Field(
+        default=True, 
+        description="Whether to preserve shadow details during adjustment"
+    )
+
+
+class EnhanceContrastInput(BaseModel):
+    """Input model for contrast enhancement tool"""
+    image_path: str = Field(description="Path to the input image file")
+    output_path: Optional[str] = Field(default=None, description="Path for output image (optional, defaults to input_contrast.jpg)")
+    method: Literal["histogram_equalization", "adaptive_histogram", "linear_stretch", "gamma_correction"] = Field(
+        default="adaptive_histogram", 
+        description="Contrast enhancement method: histogram_equalization (global), adaptive_histogram (local), linear_stretch (simple), gamma_correction (tone curve)"
+    )
+    strength: float = Field(
+        default=1.0, 
+        ge=0.1, 
+        le=3.0, 
+        description="Enhancement strength (0.1-3.0, where 1.0 is normal)"
+    )
+    clip_limit: float = Field(
+        default=2.0, 
+        ge=1.0, 
+        le=10.0, 
+        description="Clipping limit for adaptive histogram equalization (1.0-10.0)"
+    )
+    tile_grid_size: int = Field(
+        default=8, 
+        ge=4, 
+        le=16, 
+        description="Grid size for adaptive histogram equalization (4-16)"
+    )
+    preserve_color: bool = Field(
+        default=True, 
+        description="Whether to preserve original color relationships"
+    )
+
+
+class ColorResolutionInput(BaseModel):
+    """Input model for color and resolution enhancement tool"""
+    image_path: str = Field(description="Path to the input image file")
+    output_path: Optional[str] = Field(default=None, description="Path for output image (optional, defaults to input_enhanced.jpg)")
+    color_enhancement: Literal["none", "saturation", "vibrance", "color_balance", "auto_color"] = Field(
+        default="vibrance", 
+        description="Color enhancement method: none, saturation (uniform boost), vibrance (selective boost), color_balance (white balance), auto_color (automatic correction)"
+    )
+    saturation_factor: float = Field(
+        default=1.2, 
+        ge=0.5, 
+        le=2.0, 
+        description="Saturation enhancement factor (0.5-2.0, where 1.0 is no change)"
+    )
+    resolution_enhancement: Literal["none", "bicubic", "lanczos", "super_resolution"] = Field(
+        default="none", 
+        description="Resolution enhancement method: none, bicubic (standard), lanczos (high quality), super_resolution (AI-based)"
+    )
+    scale_factor: float = Field(
+        default=1.0, 
+        ge=1.0, 
+        le=4.0, 
+        description="Scale factor for resolution enhancement (1.0-4.0)"
+    )
+    white_balance_correction: bool = Field(
+        default=False, 
+        description="Whether to apply automatic white balance correction"
+    )
+    noise_reduction: bool = Field(
+        default=False, 
+        description="Whether to apply light noise reduction during enhancement"
+    )
+
+
+@tool
+def sharpen_image(input_data: str) -> Dict[str, Any]:
+    """
+    Sharpens an image using various algorithms to improve edge definition and clarity.
+    Addresses blur and sharpness issues detected by image quality assessment.
+    
+    Args:
+        input_data: JSON string containing image path, output path, sharpening method, strength, radius, and threshold
+    
+    Returns:
+        Dict containing success status, output path, applied settings, and quality metrics
+    """
+    try:
+        # Clean and parse input data
+        import json
+        cleaned_input = input_data.strip().strip('`').strip("'").strip('"').strip()
+        parsed_data = json.loads(cleaned_input)
+        input_obj = SharpenImageInput(**parsed_data)
+        
+        # Validate input file
+        if not os.path.exists(input_obj.image_path):
+            return {"success": False, "error": f"Input image not found: {input_obj.image_path}"}
+        
+        # Set output path
+        if input_obj.output_path is None:
+            base, ext = os.path.splitext(input_obj.image_path)
+            input_obj.output_path = f"{base}_sharpened{ext}"
+        
+        # Load image
+        image = cv2.imread(input_obj.image_path)
+        if image is None:
+            return {"success": False, "error": "Failed to load image"}
+        
+        # Apply sharpening based on method
+        if input_obj.method == "unsharp_mask":
+            # Unsharp masking - gentle sharpening
+            gaussian = cv2.GaussianBlur(image, (0, 0), input_obj.radius)
+            unsharp_mask = cv2.addWeighted(image, 1 + input_obj.strength, gaussian, -input_obj.strength, 0)
+            sharpened = unsharp_mask
+        
+        elif input_obj.method == "laplacian":
+            # Laplacian sharpening - moderate
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            laplacian = cv2.Laplacian(gray, cv2.CV_64F)
+            laplacian = np.uint8(np.absolute(laplacian))
+            
+            # Apply threshold if specified
+            if input_obj.threshold > 0:
+                _, laplacian = cv2.threshold(laplacian, input_obj.threshold, 255, cv2.THRESH_BINARY)
+            
+            # Convert back to 3-channel and apply
+            laplacian_3ch = cv2.cvtColor(laplacian, cv2.COLOR_GRAY2BGR)
+            sharpened = cv2.addWeighted(image, 1.0, laplacian_3ch, input_obj.strength * 0.1, 0)
+        
+        elif input_obj.method == "high_pass":
+            # High-pass filter sharpening - strong
+            kernel = np.array([[-1, -1, -1],
+                             [-1, 9, -1],
+                             [-1, -1, -1]]) * input_obj.strength
+            sharpened = cv2.filter2D(image, -1, kernel)
+        
+        # Ensure values are in valid range
+        sharpened = np.clip(sharpened, 0, 255).astype(np.uint8)
+        
+        # Save result
+        cv2.imwrite(input_obj.output_path, sharpened)
+        
+        return {
+            "success": True,
+            "output_path": input_obj.output_path,
+            "method": input_obj.method,
+            "strength": input_obj.strength,
+            "radius": input_obj.radius,
+            "threshold": input_obj.threshold,
+            "message": f"Image sharpened successfully using {input_obj.method} method"
+        }
+    
+    except Exception as e:
+        return {"success": False, "error": f"Image sharpening failed: {str(e)}"}
+
+
+@tool
+def denoise_image(input_data: str) -> Dict[str, Any]:
+    """
+    Removes noise from an image using various denoising algorithms.
+    Addresses noise issues detected by image quality assessment.
+    
+    Args:
+        input_data: JSON string containing image path, output path, denoising method, strength, edge preservation, and kernel size
+    
+    Returns:
+        Dict containing success status, output path, applied settings, and quality metrics
+    """
+    try:
+        # Clean and parse input data
+        import json
+        cleaned_input = input_data.strip().strip('`').strip("'").strip('"').strip()
+        parsed_data = json.loads(cleaned_input)
+        input_obj = DenoiseImageInput(**parsed_data)
+        
+        # Validate input file
+        if not os.path.exists(input_obj.image_path):
+            return {"success": False, "error": f"Input image not found: {input_obj.image_path}"}
+        
+        # Set output path
+        if input_obj.output_path is None:
+            base, ext = os.path.splitext(input_obj.image_path)
+            input_obj.output_path = f"{base}_denoised{ext}"
+        
+        # Load image
+        image = cv2.imread(input_obj.image_path)
+        if image is None:
+            return {"success": False, "error": "Failed to load image"}
+        
+        # Ensure kernel size is odd
+        kernel_size = input_obj.kernel_size if input_obj.kernel_size % 2 == 1 else input_obj.kernel_size + 1
+        
+        # Apply denoising based on method
+        if input_obj.method == "gaussian":
+            # Gaussian blur - fast but may blur edges
+            sigma = input_obj.strength * 2.0
+            denoised = cv2.GaussianBlur(image, (kernel_size, kernel_size), sigma)
+        
+        elif input_obj.method == "bilateral":
+            # Bilateral filter - preserves edges
+            d = kernel_size
+            sigma_color = input_obj.strength * 50
+            sigma_space = input_obj.strength * 50
+            denoised = cv2.bilateralFilter(image, d, sigma_color, sigma_space)
+        
+        elif input_obj.method == "non_local_means":
+            # Non-local means - best quality but slower
+            h = input_obj.strength * 10
+            template_window_size = min(kernel_size, 7)
+            search_window_size = min(kernel_size * 3, 21)
+            denoised = cv2.fastNlMeansDenoisingColored(image, None, h, h, template_window_size, search_window_size)
+        
+        elif input_obj.method == "median":
+            # Median filter - good for salt-and-pepper noise
+            denoised = cv2.medianBlur(image, kernel_size)
+        
+        # Save result
+        cv2.imwrite(input_obj.output_path, denoised)
+        
+        return {
+            "success": True,
+            "output_path": input_obj.output_path,
+            "method": input_obj.method,
+            "strength": input_obj.strength,
+            "preserve_edges": input_obj.preserve_edges,
+            "kernel_size": kernel_size,
+            "message": f"Image denoised successfully using {input_obj.method} method"
+        }
+    
+    except Exception as e:
+        return {"success": False, "error": f"Image denoising failed: {str(e)}"}
+
+
+@tool
+def adjust_exposure(input_data: str) -> Dict[str, Any]:
+    """
+    Adjusts image exposure, brightness, and gamma correction to improve overall lighting.
+    Addresses exposure issues detected by image quality assessment.
+    
+    Args:
+        input_data: JSON string containing image path, output path, exposure compensation, gamma correction, auto adjustment, and highlight/shadow preservation settings
+    
+    Returns:
+        Dict containing success status, output path, applied settings, and quality metrics
+    """
+    try:
+        # Clean and parse input data
+        import json
+        cleaned_input = input_data.strip().strip('`').strip("'").strip('"').strip()
+        parsed_data = json.loads(cleaned_input)
+        input_obj = AdjustExposureInput(**parsed_data)
+        
+        # Validate input file
+        if not os.path.exists(input_obj.image_path):
+            return {"success": False, "error": f"Input image not found: {input_obj.image_path}"}
+        
+        # Set output path
+        if input_obj.output_path is None:
+            base, ext = os.path.splitext(input_obj.image_path)
+            input_obj.output_path = f"{base}_exposure{ext}"
+        
+        # Load image
+        image = cv2.imread(input_obj.image_path)
+        if image is None:
+            return {"success": False, "error": "Failed to load image"}
+        
+        # Convert to float for processing
+        image_float = image.astype(np.float32) / 255.0
+        
+        # Auto-adjust exposure if requested
+        if input_obj.auto_adjust:
+            # Calculate histogram statistics
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
+            
+            # Find optimal exposure compensation based on histogram
+            total_pixels = gray.shape[0] * gray.shape[1]
+            cumsum = np.cumsum(hist.flatten())
+            
+            # Find percentiles
+            p1 = np.where(cumsum >= total_pixels * 0.01)[0][0] / 255.0
+            p99 = np.where(cumsum >= total_pixels * 0.99)[0][0] / 255.0
+            
+            # Calculate auto exposure compensation
+            target_mid = 0.5
+            current_mid = (p1 + p99) / 2
+            auto_compensation = np.log2(target_mid / max(current_mid, 0.01))
+            
+            # Blend with manual compensation
+            final_compensation = (input_obj.exposure_compensation + auto_compensation) / 2
+        else:
+            final_compensation = input_obj.exposure_compensation
+        
+        # Apply exposure compensation (in stops)
+        if final_compensation != 0:
+            exposure_factor = 2 ** final_compensation
+            image_float = image_float * exposure_factor
+        
+        # Apply gamma correction
+        if input_obj.gamma_correction != 1.0:
+            image_float = np.power(image_float, 1.0 / input_obj.gamma_correction)
+        
+        # Preserve highlights if requested
+        if input_obj.preserve_highlights:
+            # Soft clipping for highlights
+            highlight_mask = image_float > 0.9
+            image_float = np.where(highlight_mask, 
+                                 0.9 + 0.1 * np.tanh((image_float - 0.9) * 10), 
+                                 image_float)
+        
+        # Preserve shadows if requested
+        if input_obj.preserve_shadows:
+            # Lift shadows gently
+            shadow_mask = image_float < 0.1
+            shadow_lift = 0.05 * (0.1 - image_float) / 0.1
+            image_float = np.where(shadow_mask, image_float + shadow_lift, image_float)
+        
+        # Clip and convert back to uint8
+        image_float = np.clip(image_float, 0, 1)
+        adjusted = (image_float * 255).astype(np.uint8)
+        
+        # Save result
+        cv2.imwrite(input_obj.output_path, adjusted)
+        
+        return {
+            "success": True,
+            "output_path": input_obj.output_path,
+            "exposure_compensation": final_compensation,
+            "gamma_correction": input_obj.gamma_correction,
+            "auto_adjust": input_obj.auto_adjust,
+            "preserve_highlights": input_obj.preserve_highlights,
+            "preserve_shadows": input_obj.preserve_shadows,
+            "message": f"Exposure adjusted successfully with {final_compensation:.2f} stops compensation"
+        }
+    
+    except Exception as e:
+        return {"success": False, "error": f"Exposure adjustment failed: {str(e)}"}
+
+
+@tool
+def enhance_contrast(input_data: str) -> Dict[str, Any]:
+    """
+    Enhances image contrast using various algorithms to improve dynamic range.
+    Addresses contrast issues detected by image quality assessment.
+    
+    Args:
+        input_data: JSON string containing image path, output path, contrast method, strength, and CLAHE parameters
+    
+    Returns:
+        Dict containing success status, output path, applied settings, and quality metrics
+    """
+    try:
+        # Clean and parse input data
+        import json
+        cleaned_input = input_data.strip().strip('`').strip("'").strip('"').strip()
+        parsed_data = json.loads(cleaned_input)
+        input_obj = EnhanceContrastInput(**parsed_data)
+        
+        # Validate input file
+        if not os.path.exists(input_obj.image_path):
+            return {"success": False, "error": f"Input image not found: {input_obj.image_path}"}
+        
+        # Set output path
+        if input_obj.output_path is None:
+            base, ext = os.path.splitext(input_obj.image_path)
+            input_obj.output_path = f"{base}_contrast{ext}"
+        
+        # Load image
+        image = cv2.imread(input_obj.image_path)
+        if image is None:
+            return {"success": False, "error": "Failed to load image"}
+        
+        # Apply contrast enhancement based on method
+        if input_obj.method == "histogram_equalization":
+            # Global histogram equalization
+            if input_obj.preserve_color:
+                # Convert to YUV and equalize only Y channel
+                yuv = cv2.cvtColor(image, cv2.COLOR_BGR2YUV)
+                yuv[:, :, 0] = cv2.equalizeHist(yuv[:, :, 0])
+                enhanced = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR)
+            else:
+                # Equalize each channel separately
+                channels = cv2.split(image)
+                eq_channels = [cv2.equalizeHist(ch) for ch in channels]
+                enhanced = cv2.merge(eq_channels)
+            
+            # Blend with original based on strength
+            enhanced = cv2.addWeighted(image, 1 - input_obj.strength, enhanced, input_obj.strength, 0)
+        
+        elif input_obj.method == "adaptive_histogram":
+            # CLAHE (Contrast Limited Adaptive Histogram Equalization)
+            clahe = cv2.createCLAHE(
+                clipLimit=input_obj.clip_limit,
+                tileGridSize=(input_obj.tile_grid_size, input_obj.tile_grid_size)
+            )
+            
+            if input_obj.preserve_color:
+                # Apply CLAHE to L channel in LAB color space
+                lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+                l, a, b = cv2.split(lab)
+                l_clahe = clahe.apply(l)
+                
+                # Blend with original based on strength
+                l_final = cv2.addWeighted(l, 1 - input_obj.strength, l_clahe, input_obj.strength, 0)
+                enhanced = cv2.merge([l_final, a, b])
+                enhanced = cv2.cvtColor(enhanced, cv2.COLOR_LAB2BGR)
+            else:
+                # Apply CLAHE to each channel
+                channels = cv2.split(image)
+                clahe_channels = [clahe.apply(ch) for ch in channels]
+                enhanced = cv2.merge(clahe_channels)
+        
+        elif input_obj.method == "linear_stretch":
+            # Linear contrast stretching
+            image_float = image.astype(np.float32)
+            
+            # Calculate percentiles for stretching
+            p2, p98 = np.percentile(image_float, (2, 98))
+            
+            # Apply linear stretch
+            stretched = (image_float - p2) * (255 / (p98 - p2))
+            stretched = np.clip(stretched, 0, 255)
+            
+            # Blend with original based on strength
+            enhanced = cv2.addWeighted(image.astype(np.float32), 1 - input_obj.strength, stretched, input_obj.strength, 0)
+            enhanced = enhanced.astype(np.uint8)
+        
+        elif input_obj.method == "gamma_correction":
+            # Gamma-based contrast enhancement
+            image_float = image.astype(np.float32) / 255.0
+            
+            # Calculate adaptive gamma based on image statistics
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            mean_brightness = np.mean(gray) / 255.0
+            
+            # Adjust gamma based on brightness and strength
+            if mean_brightness < 0.5:
+                gamma = 1.0 - (input_obj.strength * 0.3)  # Brighten dark images
+            else:
+                gamma = 1.0 + (input_obj.strength * 0.3)  # Darken bright images
+            
+            enhanced_float = np.power(image_float, gamma)
+            enhanced = (enhanced_float * 255).astype(np.uint8)
+        
+        # Save result
+        cv2.imwrite(input_obj.output_path, enhanced)
+        
+        return {
+            "success": True,
+            "output_path": input_obj.output_path,
+            "method": input_obj.method,
+            "strength": input_obj.strength,
+            "clip_limit": input_obj.clip_limit,
+            "tile_grid_size": input_obj.tile_grid_size,
+            "preserve_color": input_obj.preserve_color,
+            "message": f"Contrast enhanced successfully using {input_obj.method} method"
+        }
+    
+    except Exception as e:
+        return {"success": False, "error": f"Contrast enhancement failed: {str(e)}"}
+
+
+@tool
+def enhance_color_resolution(input_data: str) -> Dict[str, Any]:
+    """
+    Enhances image color saturation, vibrancy, and resolution using various algorithms.
+    Addresses color and resolution issues detected by image quality assessment.
+    
+    Args:
+        input_data: JSON string containing image path, output path, color enhancement method, saturation factor, resolution enhancement, and scale factor
+    
+    Returns:
+        Dict containing success status, output path, applied settings, and quality metrics
+    """
+    try:
+        # Clean and parse input data
+        import json
+        cleaned_input = input_data.strip().strip('`').strip("'").strip('"').strip()
+        parsed_data = json.loads(cleaned_input)
+        input_obj = ColorResolutionInput(**parsed_data)
+        
+        # Validate input file
+        if not os.path.exists(input_obj.image_path):
+            return {"success": False, "error": f"Input image not found: {input_obj.image_path}"}
+        
+        # Set output path
+        if input_obj.output_path is None:
+            base, ext = os.path.splitext(input_obj.image_path)
+            input_obj.output_path = f"{base}_enhanced{ext}"
+        
+        # Load image
+        image = cv2.imread(input_obj.image_path)
+        if image is None:
+            return {"success": False, "error": "Failed to load image"}
+        
+        enhanced = image.copy()
+        
+        # Apply color enhancement
+        if input_obj.color_enhancement != "none":
+            if input_obj.color_enhancement == "saturation":
+                # Uniform saturation boost
+                hsv = cv2.cvtColor(enhanced, cv2.COLOR_BGR2HSV).astype(np.float32)
+                hsv[:, :, 1] = hsv[:, :, 1] * input_obj.saturation_factor
+                hsv[:, :, 1] = np.clip(hsv[:, :, 1], 0, 255)
+                enhanced = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
+            
+            elif input_obj.color_enhancement == "vibrance":
+                # Selective saturation boost (vibrance)
+                hsv = cv2.cvtColor(enhanced, cv2.COLOR_BGR2HSV).astype(np.float32)
+                
+                # Calculate saturation mask (boost less saturated colors more)
+                sat_normalized = hsv[:, :, 1] / 255.0
+                vibrance_mask = 1.0 - sat_normalized  # Less saturated = more boost
+                
+                # Apply selective boost
+                boost_factor = 1.0 + (input_obj.saturation_factor - 1.0) * vibrance_mask
+                hsv[:, :, 1] = hsv[:, :, 1] * boost_factor
+                hsv[:, :, 1] = np.clip(hsv[:, :, 1], 0, 255)
+                enhanced = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
+            
+            elif input_obj.color_enhancement == "color_balance":
+                # Simple color balance using gray world assumption
+                enhanced_float = enhanced.astype(np.float32)
+                
+                # Calculate channel means
+                b_mean, g_mean, r_mean = cv2.mean(enhanced)[:3]
+                overall_mean = (b_mean + g_mean + r_mean) / 3
+                
+                # Apply correction factors
+                enhanced_float[:, :, 0] *= overall_mean / b_mean  # Blue
+                enhanced_float[:, :, 1] *= overall_mean / g_mean  # Green
+                enhanced_float[:, :, 2] *= overall_mean / r_mean  # Red
+                
+                enhanced = np.clip(enhanced_float, 0, 255).astype(np.uint8)
+            
+            elif input_obj.color_enhancement == "auto_color":
+                # Automatic color correction
+                enhanced = cv2.convertScaleAbs(enhanced, alpha=1.1, beta=10)
+        
+        # Apply white balance correction if requested
+        if input_obj.white_balance_correction:
+            # Simple white balance using gray world assumption
+            enhanced_float = enhanced.astype(np.float32)
+            b_mean, g_mean, r_mean = cv2.mean(enhanced)[:3]
+            
+            # Use green channel as reference
+            enhanced_float[:, :, 0] *= g_mean / b_mean  # Blue
+            enhanced_float[:, :, 2] *= g_mean / r_mean  # Red
+            
+            enhanced = np.clip(enhanced_float, 0, 255).astype(np.uint8)
+        
+        # Apply light noise reduction if requested
+        if input_obj.noise_reduction:
+            enhanced = cv2.bilateralFilter(enhanced, 5, 50, 50)
+        
+        # Apply resolution enhancement
+        if input_obj.resolution_enhancement != "none" and input_obj.scale_factor > 1.0:
+            height, width = enhanced.shape[:2]
+            new_height = int(height * input_obj.scale_factor)
+            new_width = int(width * input_obj.scale_factor)
+            
+            if input_obj.resolution_enhancement == "bicubic":
+                enhanced = cv2.resize(enhanced, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+            elif input_obj.resolution_enhancement == "lanczos":
+                enhanced = cv2.resize(enhanced, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
+            elif input_obj.resolution_enhancement == "super_resolution":
+                # Placeholder for AI-based super resolution
+                # In practice, this would use a trained model like ESRGAN or Real-ESRGAN
+                enhanced = cv2.resize(enhanced, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
+        
+        # Save result
+        cv2.imwrite(input_obj.output_path, enhanced)
+        
+        return {
+            "success": True,
+            "output_path": input_obj.output_path,
+            "color_enhancement": input_obj.color_enhancement,
+            "saturation_factor": input_obj.saturation_factor,
+            "resolution_enhancement": input_obj.resolution_enhancement,
+            "scale_factor": input_obj.scale_factor,
+            "white_balance_correction": input_obj.white_balance_correction,
+            "noise_reduction": input_obj.noise_reduction,
+            "message": f"Image enhanced successfully with {input_obj.color_enhancement} color enhancement and {input_obj.resolution_enhancement} resolution enhancement"
+        }
+    
+    except Exception as e:
+        return {"success": False, "error": f"Color/resolution enhancement failed: {str(e)}"}

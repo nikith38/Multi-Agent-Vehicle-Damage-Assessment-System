@@ -1,0 +1,20 @@
+2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - 
+================================================================================
+2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - STARTING IMAGE ENHANCEMENT SESSION
+2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - Session Start Time: 2025-09-25 01:54:09
+2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - Image Path: tests/front_left-18.jpeg
+2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - Request: Analyze the image quality of 'tests/front_left-18.jpeg' and enhance it as needed. First assess the image metrics, then apply appropriate enhancements based on the quality issues found.
+2025-09-25 01:54:11 - ImageEnhancementAgent - INFO - ================================================================================
+2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - 
+================================================================================
+2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - EXECUTION SUMMARY
+2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - Total Execution Time: 7.263s
+2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - Total Tool Calls: 1
+2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - 
+--- TOOL CALL 1 ---
+2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - Tool: assess_image_metrics
+2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - Input: `{"image_path": "tests/front_left-18.jpeg"}`
+2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - Output: {"is_processable":true,"overall_metrics":{"blur_score":588.8728223472104,"brightness_score":30.88302989969136,"contrast_score":1.0,"noise_level":0.1442515451713437,"overall_score":0.8230212799394276},"region_metrics":{"center":{"blur_score":275.1846498842593,"brightness_score":15.375470679012345,"contrast_score":1.0,"noise_level":0.1524038542288343,"overall_score":0.8263012107456651},"edges":{"blur_score":1460.7793628682682,"brightness_score":75.21401620370371,"contrast_score":1.0,"noise_level":1.1102230246251565e-16,"overall_score":1.0},"corners":{"blur_score":65.23344272300187,"brightness_score":3.1554484953703703,"contrast_score":1.0,"noise_level":0.34024809028463254,"overall_score":0.5493533728329756},"weighted_average":{"blur_score":588.8728223472104,"brightness_score":30.88302989969136,"contrast_score":1.0,"noise_level":0.1442515451713437,"overall_score":0.8230212799394276}},"quality_issues":[],"recommendations":["Image quality is acceptable for processing"],"processing_time":2.9990079402923584,"image_properties":{"width":1920,"height":1080,"channels":3,"total_pixels":2073600,"aspect_ratio":1.7777777777777777,"file_size":789258}}
+2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - 
+Final Answer: The image quality of 'tests/front_left-18.jpeg' is acceptable for processing, and no enhancements are needed.
+2025-09-25 01:54:18 - ImageEnhancementAgent - INFO - ================================================================================
