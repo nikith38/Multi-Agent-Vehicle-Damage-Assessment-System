@@ -22,6 +22,12 @@ import glob
 import json
 import time
 import logging
+import requests
+from typing import Dict, List, Any
+from dotenv import load_dotenv
+
+# Load environment variables from .env file with override=True
+load_dotenv(override=True)
 
 class BatchProcessor:
     def __init__(self):
@@ -386,6 +392,390 @@ class BatchProcessor:
         
         return summary_file
     
+    def find_severity_assessment_files(self) -> List[Path]:
+        """Find all severity assessment output files in the results directory"""
+        self.logger.info("Searching for severity assessment files...")
+        
+        severity_files = []
+        
+        # Search through all result folders
+        for result_folder in self.results_dir.iterdir():
+            if result_folder.is_dir() and not result_folder.name.endswith('.json'):
+                # Look for severity assessment files in both root and enhanced subdirectories
+                patterns = [
+                    "*severity_assessment_output.json",
+                    "enhanced/*severity_assessment_output.json"
+                ]
+                
+                for pattern in patterns:
+                    matches = list(result_folder.glob(pattern))
+                    severity_files.extend(matches)
+                    
+                    if matches:
+                        self.logger.debug(f"Found {len(matches)} severity files in {result_folder.name} with pattern {pattern}")
+                        for match in matches:
+                            self.logger.debug(f"  - {match}")
+        
+        self.logger.info(f"Total severity assessment files found: {len(severity_files)}")
+        return severity_files
+    
+    def load_severity_assessments(self) -> List[Dict[str, Any]]:
+        """Load all severity assessment JSON files"""
+        self.logger.info("Loading severity assessment data...")
+        
+        severity_files = self.find_severity_assessment_files()
+        assessments = []
+        
+        for file_path in severity_files:
+            try:
+                self.logger.debug(f"Loading: {file_path}")
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    # Add source file information
+                    data['source_file'] = file_path.name
+                    data['source_folder'] = file_path.parent.name
+                    assessments.append(data)
+                    self.logger.debug(f"Successfully loaded {file_path.name}")
+            except Exception as e:
+                self.logger.error(f"Failed to load {file_path}: {str(e)}")
+                continue
+        
+        self.logger.info(f"Successfully loaded {len(assessments)} severity assessments")
+        return assessments
+    
+    def call_gpt4o_mini(self, assessments_data: str) -> Dict[str, Any]:
+        """
+        Call GPT-4o Mini API to consolidate damage assessments
+        
+        Args:
+            assessments_data: JSON string of severity assessments
+            
+        Returns:
+            Consolidated damage assessment or None if failed
+        """
+        # Load the deduplication prompt
+        prompt_path = Path(__file__).parent / "agents" / "prompts" / "damage_deduplication_prompt.py"
+        
+        try:
+            # Import the prompt
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("damage_deduplication_prompt", prompt_path)
+            prompt_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(prompt_module)
+            prompt = prompt_module.DAMAGE_DEDUPLICATION_PROMPT
+            self.logger.debug("Successfully loaded deduplication prompt")
+        except Exception as e:
+            self.logger.error(f"Failed to load deduplication prompt: {str(e)}")
+            return None
+        
+        # Get API key
+        api_key = os.getenv('OPENAI_API_KEY')
+        if not api_key:
+            self.logger.error("OpenAI API key not found in environment variables")
+            raise ValueError("OPENAI_API_KEY environment variable not set")
+        
+        headers = {
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json'
+        }
+        
+        # Combine prompt with assessment data
+        full_prompt = f"{prompt}\n\nSEVERITY ASSESSMENTS TO ANALYZE:\n{assessments_data}"
+        
+        payload = {
+            'model': 'gpt-4o-mini',
+            'messages': [
+                {
+                    'role': 'user',
+                    'content': full_prompt
+                }
+            ],
+            'temperature': 0.1,  # Low temperature for consistent results
+            'max_tokens': 4000
+        }
+        
+        try:
+            self.logger.info("Sending consolidation request to GPT-4o Mini...")
+            response = requests.post(
+                'https://api.openai.com/v1/chat/completions',
+                headers=headers,
+                json=payload,
+                timeout=120  # Increased timeout for complex analysis
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                content = result['choices'][0]['message']['content'].strip()
+                self.logger.info("Successfully received response from GPT-4o Mini")
+                self.logger.debug(f"Response length: {len(content)} characters")
+                
+                # Clean up response - remove any markdown formatting
+                if content.startswith('```json'):
+                    content = content[7:]  # Remove ```json
+                if content.endswith('```'):
+                    content = content[:-3]  # Remove ```
+                content = content.strip()
+                
+                # Parse JSON response
+                try:
+                    consolidated_data = json.loads(content)
+                    self.logger.info("Successfully parsed consolidated damage assessment")
+                    
+                    # Validate required fields
+                    required_fields = ['total_unique_damages', 'consolidated_damages', 'overall_vehicle_condition']
+                    for field in required_fields:
+                        if field not in consolidated_data:
+                            self.logger.warning(f"Missing required field in response: {field}")
+                    
+                    return consolidated_data
+                    
+                except json.JSONDecodeError as e:
+                    self.logger.error(f"Failed to parse JSON response: {str(e)}")
+                    self.logger.error(f"Raw response content: {content[:500]}...")
+                    
+                    # Try to extract JSON from response if it contains extra text
+                    try:
+                        # Look for JSON object in the response
+                        start_idx = content.find('{')
+                        end_idx = content.rfind('}') + 1
+                        if start_idx != -1 and end_idx != 0:
+                            json_content = content[start_idx:end_idx]
+                            consolidated_data = json.loads(json_content)
+                            self.logger.info("Successfully extracted and parsed JSON from response")
+                            return consolidated_data
+                    except:
+                        pass
+                    
+                    return None
+                    
+            else:
+                self.logger.error(f"GPT-4o Mini API request failed with status {response.status_code}")
+                try:
+                    error_details = response.json()
+                    self.logger.error(f"Error details: {error_details}")
+                except:
+                    self.logger.error(f"Response text: {response.text}")
+                return None
+                
+        except Exception as e:
+            self.logger.error(f"Error calling GPT-4o Mini API: {str(e)}")
+            return None
+    
+    def consolidate_damage_assessments(self) -> Dict[str, Any]:
+        """Main consolidation function that orchestrates the deduplication process"""
+        self.logger.info("Starting damage assessment consolidation...")
+        
+        # Load all severity assessments
+        assessments = self.load_severity_assessments()
+        
+        if not assessments:
+            self.logger.warning("No severity assessments found for consolidation")
+            return None
+        
+        # Prepare assessments data as JSON string
+        assessments_json = json.dumps(assessments, indent=2)
+        self.logger.debug(f"Prepared {len(assessments)} assessments for API call")
+        
+        # Call GPT-4o Mini for deduplication
+        consolidated_result = self.call_gpt4o_mini(assessments_json)
+        
+        if consolidated_result:
+            self.logger.info("Damage consolidation completed successfully")
+            # Add metadata
+            consolidated_result['consolidation_metadata'] = {
+                'timestamp': datetime.now().isoformat(),
+                'original_assessments_count': len(assessments),
+                'source_files': [a['source_file'] for a in assessments]
+            }
+        else:
+            self.logger.error("Damage consolidation failed")
+        
+        return consolidated_result
+    
+    def save_consolidated_assessment(self, consolidated_data: Dict[str, Any]) -> Path:
+        """Save the consolidated assessment to a file"""
+        self.logger.info("Saving consolidated damage assessment...")
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"consolidated_vehicle_assessment_{timestamp}.json"
+        file_path = self.results_dir / filename
+        
+        try:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(consolidated_data, f, indent=2, ensure_ascii=False)
+            
+            self.logger.info(f"Consolidated assessment saved to: {filename}")
+            self.logger.debug(f"File size: {file_path.stat().st_size} bytes")
+            
+            return file_path
+            
+        except Exception as e:
+            self.logger.error(f"Failed to save consolidated assessment: {str(e)}")
+            raise
+    
+    def run_consolidation_and_save(self) -> Dict[str, Any]:
+        """
+        Run damage consolidation on existing results and save the output
+        
+        This method:
+        1. Finds existing severity assessment files
+        2. Runs damage consolidation using GPT-4o Mini
+        3. Saves the consolidated results to a timestamped JSON file
+        4. Returns consolidation summary and file path
+        
+        Returns:
+            Dict containing consolidation results and metadata
+        """
+        self.logger.info("Starting consolidation and save process...")
+        print("=" * 60)
+        print("RUNNING CONSOLIDATION AND SAVING OUTPUT")
+        print("=" * 60)
+        print()
+        
+        # Check for existing severity assessment files
+        print("1. Searching for existing severity assessment files...")
+        severity_files = self.find_severity_assessment_files()
+        
+        if not severity_files:
+            error_msg = "No severity assessment files found!"
+            self.logger.error(error_msg)
+            print(f"   ❌ {error_msg}")
+            print("   Please ensure there are processed results in the results directory.")
+            return {"success": False, "error": error_msg}
+        
+        print(f"   ✓ Found {len(severity_files)} severity assessment files")
+        self.logger.info(f"Found {len(severity_files)} severity assessment files")
+        print()
+        
+        # Load severity assessments
+        print("2. Loading severity assessment data...")
+        assessments = self.load_severity_assessments()
+        
+        if not assessments:
+            error_msg = "Failed to load severity assessments!"
+            self.logger.error(error_msg)
+            print(f"   ❌ {error_msg}")
+            return {"success": False, "error": error_msg}
+        
+        print(f"   ✓ Successfully loaded {len(assessments)} assessments")
+        self.logger.info(f"Successfully loaded {len(assessments)} assessments")
+        print()
+        
+        # Calculate original cost totals
+        total_original_cost_min = 0
+        total_original_cost_max = 0
+        
+        for assessment in assessments:
+            cost_estimate = assessment.get('repair_cost_estimate', {})
+            total_original_cost_min += cost_estimate.get('min_cost', 0)
+            total_original_cost_max += cost_estimate.get('max_cost', 0)
+        
+        # Run consolidation
+        print("3. Running damage consolidation with GPT-4o Mini...")
+        print("   This may take 30-60 seconds...")
+        
+        try:
+            # Call the consolidate_damage_assessments method
+            consolidated_result = self.consolidate_damage_assessments()
+            
+            if not consolidated_result:
+                error_msg = "Damage consolidation failed!"
+                self.logger.error(error_msg)
+                print(f"   ❌ {error_msg}")
+                return {"success": False, "error": error_msg}
+            
+            print("   ✓ Damage consolidation completed successfully!")
+            self.logger.info("Damage consolidation completed successfully")
+            print()
+            
+            # Generate timestamp for filename
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            
+            # Add additional metadata to the result
+            final_output = {
+                "consolidation_metadata": {
+                    "timestamp": timestamp,
+                    "original_assessments_count": len(assessments),
+                    "consolidation_method": "GPT-4o Mini",
+                    "processing_date": datetime.now().isoformat(),
+                    "source_files": [assessment.get('source_file', 'unknown') for assessment in assessments],
+                    "original_cost_estimate": {
+                        "min_total": total_original_cost_min,
+                        "max_total": total_original_cost_max
+                    }
+                },
+                "consolidation_result": consolidated_result
+            }
+            
+            # Save to JSON file
+            print(f"4. Saving consolidation output...")
+            output_file = self.save_consolidated_assessment(final_output)
+            
+            print(f"   ✓ Output saved successfully to: {output_file.name}")
+            print()
+            
+            # Display summary
+            print("5. Consolidation Summary:")
+            print("-" * 40)
+            
+            total_damages = consolidated_result.get('total_unique_damages', 0)
+            print(f"   Total unique damages: {total_damages}")
+            
+            severity_dist = consolidated_result.get('severity_distribution', {})
+            print(f"   Severity distribution:")
+            print(f"      - Minor: {severity_dist.get('minor', 0)}")
+            print(f"      - Moderate: {severity_dist.get('moderate', 0)}")
+            print(f"      - Severe: {severity_dist.get('severe', 0)}")
+            
+            overall_condition = consolidated_result.get('overall_vehicle_condition', {})
+            cost_estimate = overall_condition.get('total_repair_cost_estimate', {})
+            min_cost = cost_estimate.get('min_total', 0)
+            max_cost = cost_estimate.get('max_total', 0)
+            
+            print(f"   Consolidated repair cost: ${min_cost:,} - ${max_cost:,}")
+            
+            if total_original_cost_min > 0 and total_original_cost_max > 0:
+                cost_reduction_min = total_original_cost_min - min_cost
+                cost_reduction_max = total_original_cost_max - max_cost
+                print(f"   Cost reduction: ${cost_reduction_min:,} - ${cost_reduction_max:,}")
+                
+                if cost_reduction_min > 0:
+                    reduction_percent_min = (cost_reduction_min / total_original_cost_min) * 100
+                    reduction_percent_max = (cost_reduction_max / total_original_cost_max) * 100
+                    print(f"   Percentage reduction: {reduction_percent_min:.1f}% - {reduction_percent_max:.1f}%")
+            
+            print(f"   Overall severity: {overall_condition.get('overall_severity', 'unknown')}")
+            print(f"   Drivability: {overall_condition.get('drivability_assessment', 'unknown')}")
+            print(f"   Insurance recommendation: {overall_condition.get('insurance_recommendation', 'unknown')}")
+            print()
+            
+            print("=" * 60)
+            print("✅ CONSOLIDATION OUTPUT SAVED SUCCESSFULLY!")
+            print("=" * 60)
+            print(f"📁 File location: {output_file.absolute()}")
+            print(f"📊 Original assessments: {len(assessments)} → Consolidated damages: {total_damages}")
+            print()
+            
+            return {
+                "success": True,
+                "output_file": str(output_file.absolute()),
+                "original_assessments_count": len(assessments),
+                "consolidated_damages_count": total_damages,
+                "cost_reduction": {
+                    "min": cost_reduction_min if total_original_cost_min > 0 else 0,
+                    "max": cost_reduction_max if total_original_cost_max > 0 else 0
+                },
+                "consolidation_result": consolidated_result
+            }
+            
+        except Exception as e:
+            error_msg = f"Error during consolidation: {str(e)}"
+            self.logger.error(error_msg)
+            print(f"   ❌ {error_msg}")
+            import traceback
+            traceback.print_exc()
+            return {"success": False, "error": error_msg}
+    
     def process_batch(self):
         """Process all images in the raw_images directory"""
         self.logger.info("Starting batch processing session...")
@@ -511,6 +901,18 @@ class BatchProcessor:
         total_time = time.time() - start_time
         self.logger.info(f"Batch processing completed in {total_time:.2f} seconds")
         summary_file = self.create_batch_summary(results)
+        
+        # Run damage deduplication consolidation
+        self.logger.info("Starting damage deduplication consolidation...")
+        consolidated_assessment = self.consolidate_damage_assessments()
+        
+        if consolidated_assessment:
+            self.logger.info("Damage deduplication completed successfully!")
+            # Save consolidated assessment
+            consolidated_file = self.save_consolidated_assessment(consolidated_assessment)
+            self.logger.info(f"Consolidated assessment saved to: {consolidated_file.name}")
+        else:
+            self.logger.warning("Damage deduplication failed or no severity assessments found")
         
         # Print final summary
         successful_count = sum(1 for r in results if r['success'])

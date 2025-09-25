@@ -1,0 +1,230 @@
+{
+  "consolidation_metadata": {
+    "timestamp": "20250925_171601",
+    "original_assessments_count": 5,
+    "consolidation_method": "GPT-4o Mini",
+    "processing_date": "2025-09-25T17:16:01.116654",
+    "source_files": [
+      "front-7-_enhanced_severity_assessment_output.json",
+      "front_left-15_enhanced_severity_assessment_output.json",
+      "left-9-_enhanced_severity_assessment_output.json",
+      "rear_right-21_enhanced_severity_assessment_output.json",
+      "right-11_enhanced_severity_assessment_output.json"
+    ],
+    "original_cost_estimate": {
+      "min_total": 4300.0,
+      "max_total": 10800.0
+    }
+  },
+  "consolidation_result": {
+    "total_unique_damages": 5,
+    "severity_distribution": {
+      "minor": 1,
+      "moderate": 4,
+      "severe": 0
+    },
+    "consolidated_damages": [
+      {
+        "damage_id": 1,
+        "affected_part": "front bumper",
+        "damage_type": "crack",
+        "severity_classification": "moderate",
+        "severity_score": 6.0,
+        "repair_cost_estimate": {
+          "min_cost": 800.0,
+          "max_cost": 1500.0,
+          "currency": "USD",
+          "confidence_level": "medium"
+        },
+        "repair_recommendation": {
+          "approach": "repair",
+          "description": "The crack in the front bumper can be repaired using specialized plastic welding techniques. If the damage is too extensive, partial replacement of the bumper may be necessary.",
+          "estimated_time": "3-5 days",
+          "required_expertise": "intermediate",
+          "parts_needed": [
+            "front bumper repair kit",
+            "paint and refinishing materials"
+          ]
+        },
+        "safety_concerns": [
+          {
+            "concern": "Potential for reduced structural integrity of the bumper",
+            "priority": "medium",
+            "affected_systems": [
+              "front impact safety systems"
+            ]
+          }
+        ],
+        "has_safety_issues": true,
+        "source_images": [
+          "front-7-_enhanced_severity_assessment_output.json"
+        ],
+        "consolidation_notes": "Consolidated with the assessment of the front bumper crack due to matching damage type and severity."
+      },
+      {
+        "damage_id": 2,
+        "affected_part": "left headlight assembly",
+        "damage_type": "dent",
+        "severity_classification": "moderate",
+        "severity_score": 6.0,
+        "repair_cost_estimate": {
+          "min_cost": 800.0,
+          "max_cost": 2500.0,
+          "currency": "USD",
+          "confidence_level": "medium"
+        },
+        "repair_recommendation": {
+          "approach": "replace",
+          "description": "The left headlight assembly has sustained a dent that affects its functionality. It is recommended to replace the headlight to ensure proper visibility and safety.",
+          "estimated_time": "3-5 days",
+          "required_expertise": "intermediate",
+          "parts_needed": [
+            "headlight assembly (left)"
+          ]
+        },
+        "safety_concerns": [
+          {
+            "concern": "Reduced visibility due to damaged headlight",
+            "priority": "high",
+            "affected_systems": [
+              "lighting system"
+            ]
+          }
+        ],
+        "has_safety_issues": true,
+        "source_images": [
+          "front_left-15_enhanced_severity_assessment_output.json"
+        ],
+        "consolidation_notes": "This damage is unique and not duplicated in other assessments."
+      },
+      {
+        "damage_id": 3,
+        "affected_part": "front tire (left)",
+        "damage_type": "flat_tire",
+        "severity_classification": "moderate",
+        "severity_score": 6.0,
+        "repair_cost_estimate": {
+          "min_cost": 1200.0,
+          "max_cost": 3000.0,
+          "currency": "USD",
+          "confidence_level": "medium"
+        },
+        "repair_recommendation": {
+          "approach": "replace",
+          "description": "The front tire (left) is completely flat and requires replacement. The front door (left) has minor damage that may require repair or repainting, depending on the extent of the damage.",
+          "estimated_time": "3-5 days",
+          "required_expertise": "intermediate",
+          "parts_needed": [
+            "front tire (left)",
+            "paint for front door (left)"
+          ]
+        },
+        "safety_concerns": [
+          {
+            "concern": "Flat tire may lead to loss of control while driving.",
+            "priority": "high",
+            "affected_systems": [
+              "tire system",
+              "steering system"
+            ]
+          }
+        ],
+        "has_safety_issues": true,
+        "source_images": [
+          "left-9-_enhanced_severity_assessment_output.json",
+          "right-11_enhanced_severity_assessment_output.json"
+        ],
+        "consolidation_notes": "Consolidated with the assessment of the flat tire due to matching damage type and severity."
+      },
+      {
+        "damage_id": 4,
+        "affected_part": "front door (left)",
+        "damage_type": "dent",
+        "severity_classification": "moderate",
+        "severity_score": 6.0,
+        "repair_cost_estimate": {
+          "min_cost": 1200.0,
+          "max_cost": 3000.0,
+          "currency": "USD",
+          "confidence_level": "medium"
+        },
+        "repair_recommendation": {
+          "approach": "repair",
+          "description": "The dent on the front left door can be repaired using traditional dent removal techniques. Given the damage percentage of the door, a repair is feasible without needing a full replacement.",
+          "estimated_time": "3-5 days",
+          "required_expertise": "intermediate",
+          "parts_needed": [
+            "paint for door repair"
+          ]
+        },
+        "safety_concerns": [
+          {
+            "concern": "Dent may affect door functionality.",
+            "priority": "medium",
+            "affected_systems": [
+              "door locking mechanism"
+            ]
+          }
+        ],
+        "has_safety_issues": true,
+        "source_images": [
+          "right-11_enhanced_severity_assessment_output.json"
+        ],
+        "consolidation_notes": "This damage is unique and not duplicated in other assessments."
+      },
+      {
+        "damage_id": 5,
+        "affected_part": "rear door",
+        "damage_type": "scratch",
+        "severity_classification": "minor",
+        "severity_score": 3.0,
+        "repair_cost_estimate": {
+          "min_cost": 300.0,
+          "max_cost": 800.0,
+          "currency": "USD",
+          "confidence_level": "medium"
+        },
+        "repair_recommendation": {
+          "approach": "repair",
+          "description": "The scratch on the rear door can be repaired through sanding and repainting. No part replacement is necessary.",
+          "estimated_time": "2-3 days",
+          "required_expertise": "basic",
+          "parts_needed": []
+        },
+        "safety_concerns": [],
+        "has_safety_issues": false,
+        "source_images": [
+          "rear_right-21_enhanced_severity_assessment_output.json"
+        ],
+        "consolidation_notes": "This damage is unique and not duplicated in other assessments."
+      }
+    ],
+    "overall_vehicle_condition": {
+      "total_repair_cost_estimate": {
+        "min_total": 3000.0,
+        "max_total": 8000.0,
+        "currency": "USD"
+      },
+      "overall_severity": "moderate",
+      "drivability_assessment": "caution",
+      "priority_repairs": [
+        "replace front tire",
+        "repair front bumper",
+        "replace left headlight assembly"
+      ],
+      "estimated_total_repair_time": "3-5 days",
+      "insurance_recommendation": "claim_recommended"
+    },
+    "consolidation_metadata": {
+      "timestamp": "2025-09-25T17:16:01.115939",
+      "original_assessments_count": 5,
+      "source_files": [
+        "front-7-_enhanced_severity_assessment_output.json",
+        "front_left-15_enhanced_severity_assessment_output.json",
+        "left-9-_enhanced_severity_assessment_output.json",
+        "rear_right-21_enhanced_severity_assessment_output.json",
+        "right-11_enhanced_severity_assessment_output.json"
+      ]
+    }
+  }
+}
