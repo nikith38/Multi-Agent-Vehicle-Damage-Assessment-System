@@ -14,15 +14,15 @@ sys.path.insert(0, str(project_root))
 from orchestrator import create_damage_assessment_orchestrator
 
 def main():
-    print("🚀 Running Complete Damage Assessment Pipeline")
+    print(">> Running Complete Damage Assessment Pipeline")
     print("=" * 60)
     
     # Get API key from environment or use test key
     api_key = os.getenv('OPENAI_API_KEY', 'test-key')
-    ngrok_url = 'https://8816baf1bf4f.ngrok-free.app/'
+    ngrok_url = os.getenv('NGROK_URL', 'https://8816baf1bf4f.ngrok-free.app/')
     
-    print(f"🔑 Using API Key: {'***' + api_key[-4:] if len(api_key) > 4 else 'test-key'}")
-    print(f"🌐 NGROK URL: {ngrok_url}")
+    print(f"API Key: {'***' + api_key[-4:] if len(api_key) > 4 else 'test-key'}")
+    print(f"NGROK URL: {ngrok_url}")
     
     # Create orchestrator
     orchestrator = create_damage_assessment_orchestrator(
@@ -51,23 +51,23 @@ def main():
             image_files.append(img_file)
     
     if not image_files:
-        print("❌ No original image files found in tests folder")
+        print("[X] No original image files found in tests folder")
         print(f"   Found {len(all_image_files)} total images, but all appear to be processed/enhanced versions")
         return
     
     # Convert to relative paths as strings
     image_paths = [f"tests/{img.name}" for img in image_files]
     
-    print(f"\n📸 Found {len(image_paths)} images in tests folder:")
+    print(f"\nFound {len(image_paths)} images in tests folder:")
     for img in image_paths:
         print(f"   - {img}")
     
-    print(f"\n🎯 Pipeline Configuration:")
+    print(f"\nPipeline Configuration:")
     print(f"   - Confidence Threshold: 0.5")
     print(f"   - Max Retries: 3 (ignored in fail-fast mode)")
     print(f"   - Fail-Fast Mode: Enabled")
     
-    print(f"\n🚀 Starting pipeline execution...")
+    print(f"\nStarting pipeline execution...")
     print("-" * 40)
     
     try:
@@ -79,37 +79,37 @@ def main():
         )
         
         print("\n" + "=" * 60)
-        print("📊 PIPELINE RESULTS")
+        print("PIPELINE RESULTS")
         print("=" * 60)
         
-        print(f"✅ Overall Success: {results['success']}")
-        print(f"📸 Images Processed: {results['images_processed']}/{len(image_paths)}")
-        print(f"❌ Images Failed: {results['images_failed']}")
-        print(f"⏱️  Total Processing Time: {results['total_processing_time']:.2f}s")
-        print(f"📋 Manual Review Required: {results.get('requires_manual_review', False)}")
+        print(f"Overall Success: {results['success']}")
+        print(f"Images Processed: {results['images_processed']}/{len(image_paths)}")
+        print(f"Images Failed: {results['images_failed']}")
+        print(f"Total Processing Time: {results['total_processing_time']:.2f}s")
+        print(f"Manual Review Required: {results.get('requires_manual_review', False)}")
         
         # Pipeline metadata
         metadata = results.get('pipeline_metadata', {})
-        print(f"\n🔍 PIPELINE METADATA:")
-        print(f"   🛑 Terminated Due to Error: {metadata.get('workflow_terminated_due_to_error', False)}")
-        print(f"   📝 Termination Reason: {metadata.get('termination_reason', 'N/A')}")
-        print(f"   📅 Completed At: {metadata.get('processing_completed_at', 'N/A')}")
+        print(f"\nPIPELINE METADATA:")
+        print(f"   Terminated Due to Error: {metadata.get('workflow_terminated_due_to_error', False)}")
+        print(f"   Termination Reason: {metadata.get('termination_reason', 'N/A')}")
+        print(f"   Completed At: {metadata.get('processing_completed_at', 'N/A')}")
         
         # Failed images
         if results.get('failed_images'):
-            print(f"\n❌ FAILED IMAGES:")
+            print(f"\nFAILED IMAGES:")
             for failed_img in results['failed_images']:
                 print(f"   - {failed_img}")
         
         # Errors
         if results.get('errors'):
-            print(f"\n🚨 ERRORS:")
+            print(f"\nERRORS:")
             for error in results['errors']:
                 print(f"   - {error}")
         
         # Individual results
         if results.get('individual_results'):
-            print(f"\n📋 INDIVIDUAL RESULTS:")
+            print(f"\nINDIVIDUAL RESULTS:")
             for i, result in enumerate(results['individual_results']):
                 print(f"   Image {i+1}: {result['image_path']}")
                 print(f"     Success: {result['success']}")
@@ -121,7 +121,7 @@ def main():
         
         # Consolidated assessment
         if results.get('consolidated_assessment'):
-            print(f"\n📊 CONSOLIDATED ASSESSMENT:")
+            print(f"\nCONSOLIDATED ASSESSMENT:")
             assessment = results['consolidated_assessment']
             print(f"   Total Damages: {assessment.get('total_damages_detected', 0)}")
             print(f"   Total Parts Affected: {assessment.get('total_parts_affected', 0)}")
@@ -132,15 +132,15 @@ def main():
         
         # Summary based on termination status
         if metadata.get('workflow_terminated_due_to_error', False):
-            print("🛑 WORKFLOW TERMINATED GRACEFULLY (FAIL-FAST MODE)")
+            print("WORKFLOW TERMINATED GRACEFULLY (FAIL-FAST MODE)")
             print(f"   Reason: {metadata.get('termination_reason', 'Unknown')}")
             print("   This demonstrates the fail-fast functionality working correctly.")
         else:
-            print("✅ WORKFLOW COMPLETED NORMALLY")
+            print("WORKFLOW COMPLETED NORMALLY")
             print("   All images were processed successfully or the workflow completed without early termination.")
         
     except Exception as e:
-        print(f"\n❌ Pipeline execution failed with exception:")
+        print(f"\nPipeline execution failed with exception:")
         print(f"   Error: {str(e)}")
         import traceback
         traceback.print_exc()

@@ -1,0 +1,32 @@
+{
+    "severity_classification": "minor",
+    "severity_score": 3.0,
+    "repair_cost_estimate": {
+        "min_cost": 300.0,
+        "max_cost": 800.0,
+        "currency": "USD",
+        "confidence_level": "medium"
+    },
+    "repair_recommendation": {
+        "approach": "repair",
+        "description": "The scratch on the rear door can be repaired through sanding and repainting. No part replacement is necessary.",
+        "estimated_time": "2-3 days",
+        "required_expertise": "basic",
+        "parts_needed": []
+    },
+    "safety_concerns": [],
+    "has_safety_issues": false,
+    "severity_explanation": "The damage is classified as minor due to the cosmetic nature of the scratch, which does not affect the vehicle's structural integrity or functionality.",
+    "cost_breakdown": "Repair costs are estimated based on the average cost of labor ($100/hour) and materials for paint and refinishing. The scratch is estimated to take 3-8 hours of labor, leading to a cost range of $300 to $800.",
+    "assessment_confidence": "medium",
+    "factors_considered": [
+        "Extent of visible damage",
+        "Part criticality (rear door)",
+        "Repair complexity (simple scratch repair)"
+    ],
+    "additional_notes": null,
+    "total_damages_analyzed": 1,
+    "total_parts_affected": 1,
+    "processing_time": 7.5647971630096436,
+    "success": true
+}

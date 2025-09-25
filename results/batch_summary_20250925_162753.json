@@ -1,0 +1,126 @@
+{
+  "batch_timestamp": "20250925_162753",
+  "total_images": 8,
+  "successful": 8,
+  "failed": 0,
+  "results": [
+    {
+      "image": "front-7.jpeg",
+      "success": true,
+      "timestamp": "20250925_162331",
+      "result_folder": "20250925_162331_front-7",
+      "archived_files": [
+        "front-7-enhanced_enhancement_output.json",
+        "front-7.jpeg",
+        "enhanced/front-7-enhanced.jpeg",
+        "enhanced/front-7-enhanced_damage_detection_output.json",
+        "enhanced/front-7-enhanced_enhanced_annotated.jpg",
+        "enhanced/front-7-enhanced_part_identification_output.json",
+        "enhanced/front-7-_enhanced_severity_assessment_output.json"
+      ],
+      "error": null
+    },
+    {
+      "image": "front_left-15.jpeg",
+      "success": true,
+      "timestamp": "20250925_162408",
+      "result_folder": "20250925_162408_front_left-15",
+      "archived_files": [
+        "front_left-15.jpeg",
+        "front_left-15_enhancement_output.json",
+        "enhanced/front_left-15_enhanced.jpeg",
+        "enhanced/front_left-15_enhanced_damage_detection_output.json",
+        "enhanced/front_left-15_enhanced_enhanced_annotated.jpg",
+        "enhanced/front_left-15_enhanced_part_identification_output.json",
+        "enhanced/front_left-15_enhanced_severity_assessment_output.json"
+      ],
+      "error": null
+    },
+    {
+      "image": "front_right-17.jpeg",
+      "success": true,
+      "timestamp": "20250925_162445",
+      "result_folder": "20250925_162445_front_right-17",
+      "archived_files": [
+        "front_right-17.jpeg",
+        "front_right-17_enhancement_output.json",
+        "enhanced/front_right-17_sharpened.jpeg",
+        "enhanced/front_right-17_sharpened_damage_detection_output.json"
+      ],
+      "error": null
+    },
+    {
+      "image": "left-9.jpeg",
+      "success": true,
+      "timestamp": "20250925_162513",
+      "result_folder": "20250925_162513_left-9",
+      "archived_files": [
+        "left-9-enhanced_enhancement_output.json",
+        "left-9.jpeg",
+        "enhanced/left-9-enhanced.jpeg",
+        "enhanced/left-9-enhanced_damage_detection_output.json",
+        "enhanced/left-9-enhanced_enhanced_annotated.jpg",
+        "enhanced/left-9-enhanced_part_identification_output.json",
+        "enhanced/left-9-_enhanced_severity_assessment_output.json"
+      ],
+      "error": null
+    },
+    {
+      "image": "rear-13.jpeg",
+      "success": true,
+      "timestamp": "20250925_162553",
+      "result_folder": "20250925_162553_rear-13",
+      "archived_files": [
+        "rear-13-enhanced_enhancement_output.json",
+        "rear-13.jpeg",
+        "enhanced/rear-13-enhanced.jpeg",
+        "enhanced/rear-13-enhanced_damage_detection_output.json"
+      ],
+      "error": null
+    },
+    {
+      "image": "rear_left-19.jpeg",
+      "success": true,
+      "timestamp": "20250925_162618",
+      "result_folder": "20250925_162618_rear_left-19",
+      "archived_files": [
+        "rear_left-19.jpeg",
+        "rear_left-19_enhancement_output.json",
+        "enhanced/rear_left-19_brightened.jpeg",
+        "enhanced/rear_left-19_brightened_damage_detection_output.json"
+      ],
+      "error": null
+    },
+    {
+      "image": "rear_right-21.jpeg",
+      "success": true,
+      "timestamp": "20250925_162643",
+      "result_folder": "20250925_162643_rear_right-21",
+      "archived_files": [
+        "rear_right-21.jpeg",
+        "rear_right-21_enhancement_output.json",
+        "enhanced/rear_right-21_enhanced.jpeg",
+        "enhanced/rear_right-21_enhanced_damage_detection_output.json",
+        "enhanced/rear_right-21_enhanced_enhanced_annotated.jpg",
+        "enhanced/rear_right-21_enhanced_part_identification_output.json",
+        "enhanced/rear_right-21_enhanced_severity_assessment_output.json"
+      ],
+      "error": null
+    },
+    {
+      "image": "right-11.jpeg",
+      "success": true,
+      "timestamp": "20250925_162719",
+      "result_folder": "20250925_162719_right-11",
+      "archived_files": [
+        "enhancement_output.json",
+        "right-11.jpeg",
+        "right-11_damage_detection_output.json",
+        "enhanced/right-11_enhanced_annotated.jpg",
+        "enhanced/right-11_enhanced_part_identification_output.json",
+        "enhanced/right-11_enhanced_severity_assessment_output.json"
+      ],
+      "error": null
+    }
+  ]
+}

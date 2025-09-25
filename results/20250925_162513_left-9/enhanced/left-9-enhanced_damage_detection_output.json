@@ -1,0 +1,50 @@
+{
+    "image_path": "enhanced\\left-9-enhanced.jpeg",
+    "damage_detections": [
+        {
+            "damage_id": "dmg_001",
+            "type": "tire flat",
+            "class_id": 5,
+            "bbox": [
+                1403.1,
+                637.03,
+                1773.77,
+                964.61
+            ],
+            "confidence": 0.917,
+            "area_pixels": 121424.07860000004
+        },
+        {
+            "damage_id": "dmg_002",
+            "type": "tire flat",
+            "class_id": 5,
+            "bbox": [
+                36.19,
+                579.4,
+                332.67,
+                878.03
+            ],
+            "confidence": 0.908,
+            "area_pixels": 88537.8224
+        }
+    ],
+    "total_damages": 2,
+    "detection_metadata": {
+        "model_endpoint": "https://c1f8580df74f.ngrok-free.app/detect",
+        "confidence_threshold": 0.5,
+        "model_processing_time": 0.278,
+        "image_dimensions": [
+            1920,
+            1080
+        ],
+        "timestamp": "2025-09-25T16:25:32.785593"
+    },
+    "success": true,
+    "enhancement_metadata": {
+        "processing_time": 11.306535243988037,
+        "agent_output": "The image quality of 'tests/left-9.jpeg' was assessed, revealing it was too dark. I applied an exposure adjustment with 1.5 stops compensation and gamma correction of 1.2, resulting in the enhanced image saved as 'tests/left-9-enhanced.jpeg'.",
+        "enhanced_image_path": "enhanced\\left-9-enhanced.jpeg",
+        "intermediate_steps": 2
+    },
+    "processing_time": 2.48801851272583
+}

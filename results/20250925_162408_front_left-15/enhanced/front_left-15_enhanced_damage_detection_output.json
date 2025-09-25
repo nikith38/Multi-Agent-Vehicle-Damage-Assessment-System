@@ -1,0 +1,37 @@
+{
+    "image_path": "enhanced\\front_left-15_enhanced.jpeg",
+    "damage_detections": [
+        {
+            "damage_id": "dmg_001",
+            "type": "dent",
+            "class_id": 0,
+            "bbox": [
+                637.01,
+                490.25,
+                1144.01,
+                682.8
+            ],
+            "confidence": 0.603,
+            "area_pixels": 97622.84999999998
+        }
+    ],
+    "total_damages": 1,
+    "detection_metadata": {
+        "model_endpoint": "https://c1f8580df74f.ngrok-free.app/detect",
+        "confidence_threshold": 0.5,
+        "model_processing_time": 0.291,
+        "image_dimensions": [
+            1920,
+            1080
+        ],
+        "timestamp": "2025-09-25T16:24:26.463390"
+    },
+    "success": true,
+    "enhancement_metadata": {
+        "processing_time": 9.780645370483398,
+        "agent_output": "The image quality of 'tests/front_left-15.jpeg' was assessed, revealing low brightness. The brightness was successfully enhanced, and the improved image is saved as 'tests/front_left-15_enhanced.jpeg'.",
+        "enhanced_image_path": "enhanced\\front_left-15_enhanced.jpeg",
+        "intermediate_steps": 2
+    },
+    "processing_time": 2.496445894241333
+}

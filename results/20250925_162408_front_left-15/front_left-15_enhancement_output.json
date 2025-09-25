@@ -1,0 +1,8 @@
+{
+    "quality_score": 0.8649404295910493,
+    "issues": [
+        "low_light"
+    ],
+    "enhanced_image": "enhanced\\front_left-15_enhanced.jpeg",
+    "processable": true
+}

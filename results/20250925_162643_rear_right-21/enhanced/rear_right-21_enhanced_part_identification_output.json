@@ -1,0 +1,23 @@
+{
+    "success": true,
+    "damaged_parts": [
+        {
+            "damage_id": "D01",
+            "part_name": "rear door (left)",
+            "part_id": "P008",
+            "damage_type": "scratch",
+            "damage_percentage": 30,
+            "bbox": [
+                730.21,
+                537.41,
+                875.9,
+                648.75
+            ],
+            "confidence": 0.83,
+            "location_description": "mid-section near the rear wheel"
+        }
+    ],
+    "total_parts_identified": 1,
+    "processing_time": 0.0,
+    "annotated_image_path": "enhanced/rear_right-21_enhanced_enhanced_annotated.jpg"
+}

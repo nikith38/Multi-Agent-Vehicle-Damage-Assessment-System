@@ -1,0 +1,37 @@
+{
+    "image_path": "enhanced\\front-7-enhanced.jpeg",
+    "damage_detections": [
+        {
+            "damage_id": "dmg_001",
+            "type": "crack",
+            "class_id": 2,
+            "bbox": [
+                581.46,
+                857.71,
+                789.17,
+                899.78
+            ],
+            "confidence": 0.521,
+            "area_pixels": 8738.359699999983
+        }
+    ],
+    "total_damages": 1,
+    "detection_metadata": {
+        "model_endpoint": "https://c1f8580df74f.ngrok-free.app/detect",
+        "confidence_threshold": 0.5,
+        "model_processing_time": 0.289,
+        "image_dimensions": [
+            1920,
+            1080
+        ],
+        "timestamp": "2025-09-25T16:23:49.588837"
+    },
+    "success": true,
+    "enhancement_metadata": {
+        "processing_time": 9.467100620269775,
+        "agent_output": "The image quality of 'tests/front-7.jpeg' was assessed, revealing that it was too dark. I enhanced the image by adjusting the exposure, resulting in a brighter image saved as 'tests/front-7-enhanced.jpeg'.",
+        "enhanced_image_path": "enhanced\\front-7-enhanced.jpeg",
+        "intermediate_steps": 2
+    },
+    "processing_time": 2.608060359954834
+}

@@ -1,0 +1,23 @@
+{
+    "image_path": "enhanced\\front_right-17_sharpened.jpeg",
+    "damage_detections": [],
+    "total_damages": 0,
+    "detection_metadata": {
+        "model_endpoint": "https://c1f8580df74f.ngrok-free.app/detect",
+        "confidence_threshold": 0.5,
+        "model_processing_time": 0.287,
+        "image_dimensions": [
+            1920,
+            1080
+        ],
+        "timestamp": "2025-09-25T16:25:07.717515"
+    },
+    "success": true,
+    "enhancement_metadata": {
+        "processing_time": 13.83368706703186,
+        "agent_output": "The image quality of 'tests/front_right-17.jpeg' was assessed, revealing low brightness and high blur. The exposure was adjusted to enhance brightness, and the image was sharpened to improve clarity. The final enhanced image is saved as 'tests/front_right-17_sharpened.jpeg'.",
+        "enhanced_image_path": "enhanced\\front_right-17_sharpened.jpeg",
+        "intermediate_steps": 3
+    },
+    "processing_time": 2.6350152492523193
+}

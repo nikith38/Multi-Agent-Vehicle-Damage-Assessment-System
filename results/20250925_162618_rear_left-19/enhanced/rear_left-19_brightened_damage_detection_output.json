@@ -1,0 +1,23 @@
+{
+    "image_path": "enhanced\\rear_left-19_brightened.jpeg",
+    "damage_detections": [],
+    "total_damages": 0,
+    "detection_metadata": {
+        "model_endpoint": "https://c1f8580df74f.ngrok-free.app/detect",
+        "confidence_threshold": 0.5,
+        "model_processing_time": 0.281,
+        "image_dimensions": [
+            1920,
+            1080
+        ],
+        "timestamp": "2025-09-25T16:26:37.869627"
+    },
+    "success": true,
+    "enhancement_metadata": {
+        "processing_time": 11.616000890731812,
+        "agent_output": "The image quality of 'tests/rear_left-19.jpeg' was assessed, revealing that it was too dark. I enhanced the brightness using gamma correction, resulting in the improved image saved as 'tests/rear_left-19_brightened.jpeg'.",
+        "enhanced_image_path": "enhanced\\rear_left-19_brightened.jpeg",
+        "intermediate_steps": 2
+    },
+    "processing_time": 2.4548044204711914
+}

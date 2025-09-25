@@ -233,17 +233,37 @@ class SeverityAssessmentAgent:
         """
         try:
             # Generate output filename based on image path
-            # If image_path is in enhanced folder, use that for naming
+            # Debug: print the image_path to understand what we're working with
+            if self.enable_logging:
+                print(f"DEBUG: Processing image_path: {image_path}")
+            
+            # Match the naming pattern used by other agents
             if 'enhanced' in image_path:
+                # Extract the base name from the enhanced image path
                 base_name = os.path.splitext(image_path)[0]
+                if self.enable_logging:
+                    print(f"DEBUG: Base name after splitext: {base_name}")
+                
+                # Remove the 'enhanced\' or 'enhanced/' prefix if present
+                if base_name.startswith('enhanced\\') or base_name.startswith('enhanced/'):
+                    base_name = base_name.split('enhanced')[1].lstrip('\\/')
+                    if self.enable_logging:
+                        print(f"DEBUG: Base name after removing enhanced prefix: {base_name}")
+                
+                # Clean up any trailing underscores and ensure proper naming
+                base_name = base_name.rstrip('_')
+                
+                # Use the same pattern as damage detection and part identification
+                # They use: test_enhanced_damage_detection_output.json
+                # We should use: test_enhanced_severity_assessment_output.json
+                if not base_name.endswith('_enhanced'):
+                    base_name = f"{base_name}_enhanced"
+                
+                output_file = f"enhanced/{base_name}_severity_assessment_output.json"
             else:
                 # For original images, create enhanced folder path
-                base_name = os.path.splitext(image_path)[0]
-                if not base_name.startswith('enhanced'):
-                    filename = os.path.basename(base_name)
-                    base_name = f"enhanced/{filename}_enhanced"
-            
-            output_file = f"{base_name}_severity_assessment_output.json"
+                base_name = os.path.splitext(os.path.basename(image_path))[0]
+                output_file = f"enhanced/{base_name}_enhanced_severity_assessment_output.json"
             
             # Ensure enhanced directory exists
             os.makedirs('enhanced', exist_ok=True)

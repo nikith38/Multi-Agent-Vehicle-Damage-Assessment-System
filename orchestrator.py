@@ -216,7 +216,7 @@ class DamageAssessmentOrchestrator:
     def _initialize_pipeline(self, state: PipelineState) -> PipelineState:
         """Initialize pipeline for current image."""
         if self.enable_logging:
-            print(f"\n🚀 Initializing pipeline for image {state['current_image_index'] + 1}/{len(state['images'])}")
+            print(f"\nInitializing pipeline for image {state['current_image_index'] + 1}/{len(state['images'])}")
         
         # Check if we have more images to process
         if state['current_image_index'] >= len(state['images']):
@@ -246,7 +246,7 @@ class DamageAssessmentOrchestrator:
         """Image enhancement node."""
         try:
             if self.enable_logging:
-                print("🎨 Enhancing image...")
+                print("Enhancing image...")
             
             start_time = time.time()
             current_image = state['current_result'].image_path
@@ -270,7 +270,7 @@ class DamageAssessmentOrchestrator:
                 if enhanced_image_path:
                     state['current_result'].image_path = enhanced_image_path
                     if self.enable_logging:
-                        print(f"📸 Using enhanced image for further processing: {enhanced_image_path}")
+                        print(f"Using enhanced image for further processing: {enhanced_image_path}")
                 
                 state['current_result'].enhancement_metadata = {
                     'processing_time': processing_time,
@@ -291,7 +291,7 @@ class DamageAssessmentOrchestrator:
         """Damage detection node."""
         try:
             if self.enable_logging:
-                print("🔍 Detecting damage...")
+                print("Detecting damage...")
             
             current_image = state['current_result'].image_path
             
@@ -336,7 +336,7 @@ class DamageAssessmentOrchestrator:
         """Part identification node."""
         try:
             if self.enable_logging:
-                print("🔧 Identifying damaged parts...")
+                print("Identifying damaged parts...")
             
             current_image = state['current_result'].image_path
             detections = state['current_result'].damage_detections
@@ -376,7 +376,7 @@ class DamageAssessmentOrchestrator:
         """Severity assessment node."""
         try:
             if self.enable_logging:
-                print("⚖️ Assessing damage severity...")
+                print("Assessing damage severity...")
             
             # Prepare damage detection results
             damage_results = {
@@ -417,7 +417,7 @@ class DamageAssessmentOrchestrator:
     def _consolidate_results_node(self, state: PipelineState) -> PipelineState:
         """Consolidate results from all processed images."""
         if self.enable_logging:
-            print("📊 Consolidating multi-image results...")
+            print("Consolidating multi-image results...")
         
         # Aggregate results from all images
         all_damages = []
@@ -463,8 +463,8 @@ class DamageAssessmentOrchestrator:
     def _handle_error_node(self, state: PipelineState) -> PipelineState:
         """Handle errors by stopping workflow gracefully (fail-fast approach)."""
         if self.enable_logging:
-            print(f"❌ Agent failure detected for image {state['current_image_index'] + 1}")
-            print(f"❌ Stopping workflow gracefully (fail-fast mode)...")
+            print(f"[X] Agent failure detected for image {state['current_image_index'] + 1}")
+            print(f"[X] Stopping workflow gracefully (fail-fast mode)...")
         
         # Add current result to failed images
         current_image = state['images'][state['current_image_index']]
@@ -484,10 +484,10 @@ class DamageAssessmentOrchestrator:
         """Finalize the pipeline and prepare final results."""
         if self.enable_logging:
             if state.get('workflow_terminated_due_to_error', False):
-                print("❌ Pipeline terminated due to error")
-                print(f"❌ Termination reason: {state.get('termination_reason', 'Unknown error')}")
+                print("[X] Pipeline terminated due to error")
+                print(f"[X] Termination reason: {state.get('termination_reason', 'Unknown error')}")
             else:
-                print("✅ Finalizing pipeline...")
+                print("[OK] Finalizing pipeline...")
         
         # If we have multiple successful images, consolidate (only if not terminated due to error)
         successful_results = [r for r in state['image_results'] if r.success]
@@ -732,9 +732,9 @@ class DamageAssessmentOrchestrator:
         }
         
         if self.enable_logging:
-            print(f"\n🚀 Starting damage assessment pipeline for {len(images)} images")
-            print(f"📊 Confidence threshold: {initial_state['confidence_threshold']}")
-            print(f"🔄 Max retries: {initial_state['max_retries']}")
+            print(f"\nStarting damage assessment pipeline for {len(images)} images")
+            print(f"Confidence threshold: {initial_state['confidence_threshold']}")
+            print(f"Max retries: {initial_state['max_retries']}")
         
         # Execute the workflow
         try:
@@ -758,17 +758,17 @@ class DamageAssessmentOrchestrator:
             }
             
             if self.enable_logging:
-                print(f"\n✅ Pipeline completed in {total_time:.2f}s")
-                print(f"📊 Successfully processed: {results['images_processed']}/{len(images)} images")
+                print(f"\n[OK] Pipeline completed in {total_time:.2f}s")
+                print(f"Successfully processed: {results['images_processed']}/{len(images)} images")
                 if results['images_failed'] > 0:
-                    print(f"❌ Failed images: {results['images_failed']}")
+                    print(f"[X] Failed images: {results['images_failed']}")
             
             return results
             
         except Exception as e:
             error_msg = f"Pipeline execution failed: {str(e)}"
             if self.enable_logging:
-                print(f"❌ {error_msg}")
+                print(f"[X] {error_msg}")
             
             return {
                 'success': False,
@@ -796,7 +796,7 @@ def create_damage_assessment_orchestrator(openai_api_key: Optional[str] = None,
 
 if __name__ == "__main__":
     # Example usage
-    print("🤖 LangGraph Damage Assessment Orchestrator")
+    print("LangGraph Damage Assessment Orchestrator")
     print("=" * 50)
     
     # This would be used in practice:

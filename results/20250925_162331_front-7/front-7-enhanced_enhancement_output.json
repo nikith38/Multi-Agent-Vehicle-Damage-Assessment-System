@@ -1,0 +1,8 @@
+{
+    "quality_score": 0.8646166138365579,
+    "issues": [
+        "low_light"
+    ],
+    "enhanced_image": "enhanced\\front-7-enhanced.jpeg",
+    "processable": true
+}
