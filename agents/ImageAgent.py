@@ -21,7 +21,7 @@ from imagetools import (
 )
 
 # Import prompt template
-from prompts.image_enhan_prompt import get_image_enhancement_prompt
+from .prompts.image_enhan_prompt import get_image_enhancement_prompt
 
 class ImageEnhancementAgent:
     """

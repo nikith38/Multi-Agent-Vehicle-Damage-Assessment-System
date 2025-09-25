@@ -1,0 +1,10 @@
+{
+    "quality_score": 0.8230212799394276,
+    "issues": [
+        "blur",
+        "low_contrast",
+        "low_light"
+    ],
+    "enhanced_image": "C:\\Users\\User\\Desktop\\zoop_main\\tests\\front_left-18_contrast_enhanced.jpeg",
+    "processable": true
+}
