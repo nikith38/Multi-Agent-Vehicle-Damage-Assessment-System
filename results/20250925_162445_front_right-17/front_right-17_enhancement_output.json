@@ -1,9 +1,0 @@
-{
-    "quality_score": 0.8535739726726737,
-    "issues": [
-        "blur",
-        "low_light"
-    ],
-    "enhanced_image": "enhanced\\front_right-17_sharpened.jpeg",
-    "processable": true
-}

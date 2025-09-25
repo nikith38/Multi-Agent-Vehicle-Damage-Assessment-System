@@ -1,390 +1,203 @@
 # 🚗 Vehicle Damage Assessment System
+*AI-Powered Multi-Agent Insurance Claim Processing*
 
-A sophisticated multi-agent AI system for automated vehicle damage detection, assessment, and reporting. Built with LangGraph orchestration, computer vision, and advanced language models to provide comprehensive insurance claim analysis.
+## 🏆 Performance Results
 
-## 🌟 Overview
+Our fine-tuned YOLOv8 model delivers industry-leading accuracy for automated vehicle damage assessment:
 
-This production-ready system processes vehicle damage images through a coordinated pipeline of specialized AI agents, delivering detailed assessments with cost estimates, severity classifications, and comprehensive reporting for insurance industry applications.
+![Fine-tuned Model Results](assets/results.png)
 
-### 🎯 Key Features
+### 📊 Key Metrics
+- **mAP@0.5**: 85.3% | **Precision**: 89.7% | **Recall**: 82.1% | **F1-Score**: 85.8%
+- **Processing Speed**: 2.3s per image | **API Response**: <500ms
+- **Damage Categories**: 6 types with 84-93% accuracy each
 
-- **🤖 Multi-Agent Architecture**: 5 specialized agents working in coordination
-- **🔄 LangGraph Orchestration**: Intelligent workflow management and state handling
-- **📊 Real-time Dashboard**: Streamlit-based UI with live processing updates
-- **🎨 Computer Vision**: YOLO-based damage detection with high accuracy
-- **💡 LLM Integration**: GPT-4o-mini for intelligent analysis and reasoning
-- **📈 Comprehensive Reporting**: Detailed assessments with cost estimates
-- **🔧 Production Ready**: Robust error handling and logging
+### 🔬 Research Foundation
+Inspired by the **CarDD (Car Damage Detection)** research paper, our model leverages:
+- **Fine-tuned YOLOv8** architecture optimized for automotive damage patterns
+- **SOD (Salient Object Detection)** integration planned for enhanced precision(PROPOSED)
+- **Multi-scale feature extraction** for detecting subtle damage variations
+- **Domain-specific training** on 2400 annotated vehicle damage images
 
-## 🏗️ System Architecture
+## 📚 Google Colab Resources
 
-![Vehicle Damage Assessment Flow](static/Flow.png)
+### 🎓 **Fine-tuned Model Training**
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1gaB1MmnIWKOeO3fsty4zICqlyJ6pruGU?usp=sharing)
+**Complete training pipeline** - Fine-tune YOLOv8s on vehicle damage dataset with custom annotations
 
-## 🤖 The Five Agents
+### 📥 **Pre-trained Model Download**
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1gaB1MmnIWKOeO3fsty4zICqlyJ6pruGU?usp=sharing)
+**Ready-to-use model** - Download our fine-tuned YOLOv8s weights (85.3% mAP@0.5)
 
-### 1. 🎨 **Image Enhancement Agent**
-**Type**: ReACT Agent (LangChain + GPT-4o-mini)
+### 🚀 **YOLO API Deployment**
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1mBpvYtobsWMOEPEQAMtfGWTYmhPT6AI5?usp=sharing)
+**Live API endpoint** - Deploy and test the YOLO model via HTTP API with ngrok tunneling
 
-**Capabilities**:
-- Intelligent image quality assessment using computer vision metrics
-- Automated enhancement selection based on detected issues
-- Multi-tool processing: sharpening, denoising, exposure adjustment
-- Quality validation and improvement verification
+## 🎯 System Overview
 
-**Tools Available**:
-- Blur detection and sharpening (Unsharp mask, Laplacian, High-pass)
-- Noise reduction (Gaussian, Bilateral, Non-local means, Median)
-- Exposure correction with highlight/shadow preservation
-- Contrast enhancement (Histogram equalization, CLAHE, Linear stretch)
-- Color and resolution enhancement
+A production-ready multi-agent system that automates vehicle damage assessment for insurance claims processing. Built with LangGraph orchestration and specialized AI agents.
 
-### 2. 🎯 **Damage Detection Agent**
-**Type**: Computer Vision (YOLOv8 Fine-tuned)
+![Vehicle Damage Assessment Flow](assets/Flow.png)
 
-**Capabilities**:
-- High-accuracy vehicle damage detection using fine-tuned YOLO model
-- Multi-class damage classification (dents, scratches, cracks, etc.)
-- Precise bounding box localization with confidence scores
-- Real-time processing via HTTP API integration
+### ✨ Key Features
+- **🤖 5 Specialized Agents**: Image enhancement, damage detection, part identification, severity assessment, consolidation
+- **🔄 LangGraph Orchestration**: Intelligent workflow management with error handling
+- **📱 Streamlit Dashboard**: Real-time processing with interactive UI
+- **⚡ Production Ready**: Robust error handling, logging, and batch processing
 
-**Damage Types Detected**:
-- Dents, Scratches, Cracks, Glass damage, Tire damage, Lamp damage
-- Confidence scoring and filtering
-- Area calculation and damage quantification
+## 🏗️ Architecture
 
-### 3. 🔍 **Part Identification Agent**
-**Type**: LLM-powered Vision Analysis (GPT-4o-mini)
+### Core Agents
+1. **🎨 Image Enhancement** - ReACT agent with computer vision tools (sharpening, denoising, exposure correction)
+2. **🔍 Damage Detection** - Fine-tuned YOLOv8 model via HTTP API for real-time detection
+3. **🔧 Part Identification** - GPT-4o-mini for intelligent damage-to-part mapping
+4. **⚖️ Severity Assessment** - LLM-based cost estimation and safety analysis
+5. **📋 Consolidation** - Multi-image result aggregation and final reporting
 
-**Capabilities**:
-- Intelligent mapping of damage locations to vehicle parts
-- Comprehensive vehicle part taxonomy (25+ parts)
-- Damage percentage estimation per part
-- Multi-angle view correlation and analysis
+### Technology Stack
+- **AI Models**: YOLOv8 (fine-tuned), GPT-4o-mini, OpenCV
+- **Orchestration**: LangGraph, LangChain
+- **Backend**: Python, FastAPI, Streamlit
+- **Deployment**: Docker, ngrok tunneling
 
-**Part Categories**:
-- Body panels (bumpers, fenders, doors, hood, trunk)
-- Lighting systems (headlights, taillights, fog lights)
-- Mirrors, grilles, and trim components
-- Wheels and tires
+## 🚀 Quick Start
 
-### 4. ⚖️ **Severity Assessment Agent**
-**Type**: LLM-based Analysis (GPT-4o-mini)
-
-**Capabilities**:
-- Comprehensive damage severity classification
-- Cost estimation based on part damage and repair complexity
-- Safety concern identification and flagging
-- Repair vs. replacement recommendations
-
-**Assessment Categories**:
-- Severity levels: Minor, Moderate, Major, Severe, Total Loss
-- Cost estimates with confidence intervals
-- Safety impact analysis
-- Repair timeline estimation
-
-### 5. 🧠 **Consolidation Agent**
-**Type**: LangGraph Orchestrator + LLM Analysis
-
-**Capabilities**:
-- Multi-image result correlation and deduplication
-- Overall vehicle assessment synthesis
-- Final report generation with executive summary
-- Quality assurance and consistency validation
-
-**Output Features**:
-- Consolidated damage inventory
-- Overall severity and cost summary
-- Detailed part-by-part analysis
-- Recommendations and next steps
-
-## 🛠️ Installation & Setup
-
-### Prerequisites
-- Python 3.8+
-- OpenAI API key
-- YOLO model endpoint (ngrok URL)
-
-### 1. Clone Repository
+### Installation
 ```bash
 git clone <repository-url>
 cd zoop_main
-```
-
-### 2. Install Dependencies
-```bash
 pip install -r requirements.txt
 ```
 
-### 3. Environment Configuration
-Create a `.env` file in the root directory:
-```env
-OPENAI_API_KEY=your_openai_api_key_here
-YOLO_MODEL_URL=your_ngrok_yolo_endpoint
-```
-
-### 4. Directory Structure Setup
-The system will automatically create necessary directories:
-- `raw_images/` - Input vehicle images
-- `enhanced/` - Enhanced images from processing
-- `results/` - Processing results and outputs
-- `logs/` - System logs and debugging info
-
-## 🚀 Usage
-
-### Option 1: Streamlit Dashboard (Recommended)
+### Environment Setup
 ```bash
-streamlit run streamlit_app.py
+# Create .env file
+echo "OPENAI_API_KEY=your_key_here" > .env
 ```
-Access the dashboard at `http://localhost:8501`
 
-**Dashboard Features**:
-- 📁 Drag-and-drop image upload
-- 📊 Real-time processing status
-- 📈 Live progress tracking
-- 📋 Detailed results display
-- 📥 Report download functionality
-
-### Option 2: Batch Processing
+### Launch Dashboard
 ```bash
-python batch_processor.py
+streamlit run artifacts/ui/streamlit_app.py
 ```
-Processes all images in the `raw_images/` directory automatically.
+Access at: http://localhost:8501
 
-### Option 3: Single Image Processing
+## 💻 Usage
+
+### Streamlit UI (Recommended)
+1. Upload vehicle images (JPG/PNG)
+2. Monitor real-time processing pipeline
+3. View consolidated damage assessment
+4. Download detailed JSON reports
+
+### Batch Processing
 ```python
-from orchestrator import VehicleDamageOrchestrator
+from artifacts.pipeline import BatchProcessor
 
-# Initialize orchestrator
-orchestrator = VehicleDamageOrchestrator()
+processor = BatchProcessor()
+results = processor.process_batch("path/to/images/")
+```
 
-# Process single image
-result = orchestrator.process_claim(["path/to/vehicle/image.jpg"])
-print(result)
+### Single Image API
+```python
+from artifacts.orchestrator import DamageAssessmentOrchestrator
+
+orchestrator = DamageAssessmentOrchestrator()
+result = orchestrator.process_claim(["image.jpg"])
+```
+
+## 📊 Output Format
+
+```json
+{
+  "overall_assessment": {
+    "total_damages": 3,
+    "severity_level": "moderate", 
+    "estimated_cost": "$2,450",
+    "safety_concerns": ["headlight_damage"],
+    "recommended_action": "repair"
+  },
+  "processing_metadata": {
+    "total_time": "45.2s",
+    "images_processed": 1,
+    "confidence_scores": {...}
+  }
+}
 ```
 
 ## 📁 Project Structure
 
 ```
-zoop_main/
-├── 🤖 agents/                    # AI Agent implementations
-│   ├── ImageAgent.py            # Image enhancement ReACT agent
-│   ├── DamageDetectionAgent.py  # YOLO damage detection
-│   ├── PartIdentificationAgent.py # LLM part identification
-│   ├── SeverityAssessmentAgent.py # LLM severity analysis
-│   ├── prompts/                 # Agent prompt templates
-│   └── severity_models.py       # Pydantic models
-├── 🔧 tools/                    # Image processing utilities
-│   └── imagetools.py           # Computer vision tools
-├── 🎛️ orchestrator.py          # LangGraph workflow orchestrator
-├── 📊 streamlit_app.py         # Interactive dashboard
-├── ⚙️ batch_processor.py       # Batch processing engine
-├── 📁 raw_images/              # Input images directory
-├── 📁 enhanced/                # Enhanced images output
-├── 📁 results/                 # Processing results
-├── 📁 logs/                    # System logs
-└── 📋 requirements.txt         # Python dependencies
+├── agents/                    # AI agent implementations
+│   ├── ImageAgent.py         # Enhancement agent
+│   ├── DamageDetectionAgent.py # YOLO detection
+│   ├── PartIdentificationAgent.py # Part mapping
+│   └── SeverityAssessmentAgent.py # Cost analysis
+├── artifacts/                # Organized system components
+│   ├── core/                 # Core orchestration
+│   ├── pipeline/             # Pipeline processing
+│   ├── ui/                   # User interfaces
+│   └── docs/                 # Documentation
+├── schemas/                  # Pydantic data models
+├── assets/                   # Images and documentation assets
+├── results/                  # Processing outputs
+├── logs/                     # System logs
+└── tools/                    # Image processing utilities
 ```
 
-## 🎨 Dashboard Features
-
-### Real-time Processing Display
-- **Step-by-step Progress**: Visual indicators for each processing stage
-- **Current Status Panel**: Live updates on current operations
-- **Processing Logs**: Real-time log streaming with expandable viewer
-- **Elapsed Time Tracking**: Performance monitoring
-
-### Results Visualization
-- **Damage Detection**: Annotated images with bounding boxes
-- **Part Analysis**: Detailed part-by-part damage breakdown
-- **Severity Assessment**: Color-coded severity indicators
-- **Cost Estimates**: Comprehensive repair cost analysis
-
-### Interactive Features
-- **Image Upload**: Drag-and-drop or file browser
-- **Processing Control**: Start/stop processing operations
-- **Result Export**: Download detailed reports in JSON format
-- **History Tracking**: Previous processing results access
-
-## 🔧 Configuration Options
-
-### Agent Configuration
-```python
-# Image Enhancement Agent
-image_agent = create_image_agent(
-    model="gpt-4o-mini",
-    temperature=0.1,
-    enable_logging=True
-)
-
-# Damage Detection Agent
-damage_agent = create_damage_detection_agent(
-    model_url="your_yolo_endpoint",
-    confidence_threshold=0.5,
-    timeout=30
-)
-
-# Part Identification Agent
-part_agent = create_part_identification_agent(
-    model="gpt-4o-mini",
-    temperature=0.0,
-    enable_logging=True
-)
-
-# Severity Assessment Agent
-severity_agent = create_severity_assessment_agent(
-    model="gpt-4o-mini",
-    temperature=0.1,
-    enable_logging=True
-)
-```
+## 🔧 Configuration
 
 ### Processing Parameters
-- **Confidence Thresholds**: Adjust detection sensitivity
+- **Confidence Thresholds**: Adjust detection sensitivity (default: 0.5)
 - **Enhancement Settings**: Control image processing intensity
-- **Timeout Values**: Configure processing time limits
-- **Logging Levels**: Control debug output verbosity
+- **Timeout Values**: Configure processing limits (default: 300s)
+- **Batch Size**: Optimize for available memory
 
-## 📊 Output Format
+### Model Endpoints
+- **YOLO API**: Configure ngrok URL for damage detection
+- **OpenAI**: Set API key for LLM agents
+- **Logging**: Adjust verbosity levels
 
-### Individual Agent Results
-Each agent produces structured JSON output with:
-- Processing metadata and timestamps
-- Confidence scores and quality metrics
-- Detailed analysis results
-- Error handling and status information
+## 🧪 Testing
 
-### Consolidated Assessment
-Final system output includes:
-```json
-{
-  "overall_assessment": {
-    "total_damages": 3,
-    "severity_level": "moderate",
-    "estimated_cost": "$2,450",
-    "safety_concerns": ["headlight_damage"],
-    "recommended_action": "repair"
-  },
-  "detailed_analysis": {
-    "damaged_parts": [...],
-    "damage_breakdown": [...],
-    "cost_breakdown": [...]
-  },
-  "processing_metadata": {
-    "total_time": "45.2s",
-    "images_processed": 1,
-    "agents_executed": 5
-  }
-}
-```
-
-## 🎯 Fine-tuned Model Results
-
-Our system leverages a fine-tuned YOLOv8 model specifically trained for vehicle damage detection, delivering exceptional accuracy and performance:
-
-![Fine-tuned Model Results](static/results.png)
-
-### 🏆 Performance Metrics
-- **mAP@0.5**: 85.3% - Industry-leading accuracy for damage detection
-- **Precision**: 89.7% - Minimal false positives for reliable assessments  
-- **Recall**: 82.1% - Comprehensive damage identification coverage
-- **F1-Score**: 85.8% - Optimal balance between precision and recall
-
-### 🎯 Damage Categories Detected
-Our fine-tuned model excels at identifying:
-- **Dents & Dings**: 91% accuracy across various severities
-- **Scratches**: 88% detection rate for surface and deep scratches  
-- **Cracks**: 85% identification of structural damage
-- **Glass Damage**: 93% accuracy for windshield and window damage
-- **Bumper Damage**: 87% detection for front/rear impact damage
-- **Panel Deformation**: 84% accuracy for body panel distortions
-
-### ⚡ Processing Performance
-- **Average Processing Time**: 2.3 seconds per image
-- **Batch Processing**: Up to 50 images simultaneously
-- **Memory Efficiency**: Optimized for production deployment
-- **API Response Time**: <500ms for real-time applications
-
-## 🧪 Testing & Validation
-
-### Run Test Suite
 ```bash
-# Test individual agents
-python test_yolo_health.py
-python test_confidence_filter.py
+# Test pipeline components
+python artifacts/pipeline/run_pipeline.py
 
-# Test complete pipeline
-python run_pipeline.py
+# Launch interactive dashboard
+streamlit run artifacts/ui/streamlit_app.py
 ```
 
-### Sample Test Images
-Place test images in `raw_images/` directory. Supported formats:
-- JPEG, PNG, BMP, TIFF
-- Minimum resolution: 640x480
-- Maximum file size: 10MB
+## 🚀 Future Enhancements
 
-## 🚨 Troubleshooting
+### SOD Integration
+- **Salient Object Detection** implementation for improved damage localization
+- **Attention mechanisms** to focus on damage-relevant regions
+- **Multi-modal fusion** combining YOLO + SOD outputs
 
-### Common Issues
-
-**1. OpenAI API Key Error**
-```bash
-# Set environment variable
-export OPENAI_API_KEY="your_key_here"
-# Or add to .env file
-```
-
-**2. YOLO Model Connection**
-- Verify ngrok URL is active
-- Check model endpoint health
-- Ensure proper network connectivity
-
-**3. Image Processing Errors**
-- Validate image format and size
-- Check file permissions
-- Verify OpenCV installation
-
-**4. Memory Issues**
-- Reduce batch size for large images
-- Monitor system resources
-- Consider image resizing for very large files
-
-### Performance Optimization
-- Use GPU acceleration for YOLO processing
-- Implement image caching for repeated processing
-- Adjust confidence thresholds based on accuracy requirements
-- Enable parallel processing for batch operations
+### Model Improvements
+- **Ensemble methods** combining multiple detection models
+- **Active learning** for continuous model improvement
+- **Edge deployment** optimization for mobile applications
 
 ## 🤝 Contributing
 
-### Development Setup
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/new-feature`
-3. Install development dependencies: `pip install -r requirements-dev.txt`
-4. Run tests: `python -m pytest tests/`
-5. Submit pull request
-
-### Adding New Agents
-1. Create agent class in `agents/` directory
-2. Implement required interface methods
-3. Add agent to orchestrator workflow
-4. Update documentation and tests
+1. Fork repository
+2. Create feature branch: `git checkout -b feature/enhancement`
+3. Install dev dependencies: `pip install -r requirements-dev.txt`
+4. Run tests and submit PR
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - see LICENSE file for details.
 
 ## 🙏 Acknowledgments
 
-- **LangChain**: For the ReACT agent framework
-- **LangGraph**: For workflow orchestration
-- **Streamlit**: For the interactive dashboard
-- **OpenAI**: For GPT-4o-mini language model
-- **Ultralytics**: For YOLOv8 computer vision model
+- **CarDD Research Team** for foundational damage detection methodologies
+- **Ultralytics** for YOLOv8 architecture
+- **OpenAI** for GPT-4o-mini capabilities
+- **LangChain/LangGraph** for agent orchestration framework
 
 ---
 
 **🔗 Quick Links**
-- [Dashboard](http://localhost:8501) (after running `streamlit run streamlit_app.py`)
-- [API Documentation](docs/api.md)
-- [Agent Architecture](docs/agents.md)
-- [Deployment Guide](docs/deployment.md)
+- [Dashboard](http://localhost:8501) | [API Docs](docs/api.md) | [Architecture](docs/agents.md)

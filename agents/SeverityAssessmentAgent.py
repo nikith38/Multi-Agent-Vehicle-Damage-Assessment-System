@@ -16,7 +16,7 @@ from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain.schema import HumanMessage
 
-from .severity_models import SeverityAssessment
+from schemas.severity import SeverityAssessment
 from .prompts.severity_assessment_prompt import SEVERITY_ASSESSMENT_PROMPT
 
 # Load environment variables
