@@ -1,0 +1,33 @@
+{
+    "severity_classification": "minor",
+    "severity_score": 3.0,
+    "repair_cost_estimate": {
+        "min_cost": 8000.0,
+        "max_cost": 40000.0,
+        "currency": "INR",
+        "confidence_level": "high"
+    },
+    "repair_recommendation": {
+        "approach": "repair",
+        "description": "The scratch on the rear door can be repaired through sanding and repainting. No part replacement is necessary.",
+        "estimated_time": "1 day",
+        "required_expertise": "basic",
+        "parts_needed": []
+    },
+    "safety_concerns": [],
+    "has_safety_issues": false,
+    "severity_explanation": "The damage is classified as minor due to the cosmetic nature of the scratch, which does not affect the vehicle's structural integrity or functionality.",
+    "cost_breakdown": "Repair costs are estimated based on the need for sanding, repainting, and labor. The minimum cost reflects basic cosmetic repair, while the maximum accounts for potential refinishing and labor variations.",
+    "assessment_confidence": "high",
+    "factors_considered": [
+        "Type of damage (scratch)",
+        "Location of damage (rear door)",
+        "Extent of damage (30% of part affected)",
+        "Repair time and cost estimates based on industry standards"
+    ],
+    "additional_notes": null,
+    "total_damages_analyzed": 1,
+    "total_parts_affected": 1,
+    "processing_time": 8.399760246276855,
+    "success": true
+}

@@ -1,0 +1,8 @@
+{
+    "quality_score": 0.8849221807444376,
+    "issues": [
+        "low_light"
+    ],
+    "enhanced_image": "enhanced\\rear-13-enhanced.jpeg",
+    "processable": true
+}

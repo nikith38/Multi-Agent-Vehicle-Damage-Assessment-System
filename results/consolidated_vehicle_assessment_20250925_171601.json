@@ -1,28 +1,4 @@
 {
-  "consolidation_metadata": {
-    "timestamp": "20250925_171601",
-    "original_assessments_count": 5,
-    "consolidation_method": "GPT-4o Mini",
-    "processing_date": "2025-09-25T17:16:01.116654",
-    "source_files": [
-      "front-7-_enhanced_severity_assessment_output.json",
-      "front_left-15_enhanced_severity_assessment_output.json",
-      "left-9-_enhanced_severity_assessment_output.json",
-      "rear_right-21_enhanced_severity_assessment_output.json",
-      "right-11_enhanced_severity_assessment_output.json"
-    ],
-    "original_cost_estimate": {
-      "min_total": 4300.0,
-      "max_total": 10800.0
-    }
-  },
-  "consolidation_result": {
-    "total_unique_damages": 5,
-    "severity_distribution": {
-      "minor": 1,
-      "moderate": 4,
-      "severe": 0
-    },
     "consolidated_damages": [
       {
         "damage_id": 1,

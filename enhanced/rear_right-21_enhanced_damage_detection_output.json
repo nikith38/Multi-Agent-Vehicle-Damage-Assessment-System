@@ -1,0 +1,39 @@
+{
+    "image_path": "enhanced\\rear_right-21_enhanced.jpeg",
+    "damage_detections": [
+        {
+            "damage_id": "dmg_001",
+            "type": "scratch",
+            "class_id": 1,
+            "bbox": [
+                730.21,
+                537.41,
+                875.9,
+                648.75
+            ],
+            "confidence": 0.83,
+            "area_pixels": 16221.124599999997
+        }
+    ],
+    "total_damages": 1,
+    "detection_metadata": {
+        "model_endpoint": "https://c1f8580df74f.ngrok-free.app/detect",
+        "confidence_threshold": 0.5,
+        "model_processing_time": 0.274,
+        "image_dimensions": [
+            1920,
+            1080
+        ],
+        "total_raw_detections": 1,
+        "filtered_low_confidence": 0,
+        "timestamp": "2025-09-25T18:58:47.174273"
+    },
+    "success": true,
+    "enhancement_metadata": {
+        "processing_time": 12.833081245422363,
+        "agent_output": "The image quality of 'tests/rear_right-21.jpeg' was assessed, revealing it was too dark. I enhanced the image by adjusting the exposure, resulting in a brighter output saved as 'tests/rear_right-21_enhanced.jpeg'.",
+        "enhanced_image_path": "enhanced\\rear_right-21_enhanced.jpeg",
+        "intermediate_steps": 2
+    },
+    "processing_time": 2.2117600440979004
+}

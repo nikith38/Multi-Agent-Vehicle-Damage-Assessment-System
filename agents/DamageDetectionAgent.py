@@ -207,8 +207,18 @@ class DamageDetectionAgent:
         """
         detections = []
         raw_detections = yolo_response.get('detections', [])
+        filtered_count = 0
         
         for i, detection in enumerate(raw_detections):
+            confidence = detection.get('confidence', 0.0)
+            
+            # Filter out predictions with confidence below 0.75
+            if confidence < 0.75:
+                filtered_count += 1
+                if self.enable_logging:
+                    self.logger.debug(f"Filtered out prediction with confidence {confidence:.3f} (below 0.75 threshold)")
+                continue
+            
             # Calculate bounding box area
             bbox = detection.get('bbox', [0, 0, 0, 0])
             if len(bbox) >= 4:
@@ -217,11 +227,11 @@ class DamageDetectionAgent:
                 area = detection.get('area', 0)
             
             processed_detection = {
-                'damage_id': f"dmg_{i+1:03d}",
+                'damage_id': f"dmg_{len(detections)+1:03d}",
                 'type': detection.get('class_name', 'unknown'),
                 'class_id': detection.get('class_id', -1),
                 'bbox': bbox,
-                'confidence': detection.get('confidence', 0.0),
+                'confidence': confidence,
                 'area_pixels': area
             }
             
@@ -237,10 +247,16 @@ class DamageDetectionAgent:
                 'confidence_threshold': confidence_threshold,
                 'model_processing_time': yolo_response.get('processing_time', 0),
                 'image_dimensions': yolo_response.get('image_dimensions', []),
+                'total_raw_detections': len(raw_detections),
+                'filtered_low_confidence': filtered_count,
                 'timestamp': datetime.now().isoformat()
             },
             'success': True
         }
+        
+        # Log filtering information
+        if self.enable_logging and filtered_count > 0:
+            self.logger.info(f"Filtered out {filtered_count} predictions below 0.75 confidence threshold")
         
         # Include enhancement metadata if provided
         if enhancement_metadata:
