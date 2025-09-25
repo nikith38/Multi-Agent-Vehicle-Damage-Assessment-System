@@ -141,6 +141,11 @@ class PartIdentificationAgent:
             # Combine results
             final_results = self.combine_results(yolo_detections, gpt_results)
             
+            # Save annotated image to enhanced folder instead of deleting it
+            saved_annotated_path = self._save_annotated_image(annotated_image_path, image_path)
+            if saved_annotated_path:
+                final_results['annotated_image_path'] = saved_annotated_path
+            
             # Clean up temporary file
             if os.path.exists(annotated_image_path):
                 os.remove(annotated_image_path)
@@ -153,6 +158,9 @@ class PartIdentificationAgent:
             if self.enable_logging:
                 print(f"Part identification completed in {processing_time:.2f}s")
                 print(f"Identified {len(final_results.get('damaged_parts', []))} damaged parts")
+            
+            # Save output JSON file
+            self._save_output_json(final_results, image_path)
             
             return final_results
             
@@ -358,6 +366,80 @@ class PartIdentificationAgent:
             'total_parts_identified': len(damaged_parts),
             'processing_time': self.stats['total_processing_time'] / max(1, self.stats['total_requests'])
         }
+    
+    def _save_output_json(self, result: Dict[str, Any], image_path: str) -> Optional[str]:
+        """Save part identification results to JSON file.
+        
+        Args:
+            result: Part identification results dictionary
+            image_path: Original image path for naming the output file
+            
+        Returns:
+            Path to saved JSON file or None if failed
+        """
+        try:
+            # Generate output filename based on image path
+            # If image_path is in enhanced folder, use that for naming
+            if 'enhanced' in image_path:
+                base_name = os.path.splitext(image_path)[0]
+            else:
+                # For original images, create enhanced folder path
+                base_name = os.path.splitext(image_path)[0]
+                if not base_name.startswith('enhanced'):
+                    filename = os.path.basename(base_name)
+                    base_name = f"enhanced/{filename}_enhanced"
+            
+            output_file = f"{base_name}_part_identification_output.json"
+            
+            # Ensure enhanced directory exists
+            os.makedirs('enhanced', exist_ok=True)
+            
+            # Write JSON file
+            with open(output_file, 'w') as f:
+                json.dump(result, f, indent=4)
+            
+            if self.enable_logging:
+                print(f"Part identification output saved: {output_file}")
+            
+            return output_file
+        except Exception as e:
+            if self.enable_logging:
+                print(f"Failed to save output JSON: {str(e)}")
+            return None
+    
+    def _save_annotated_image(self, temp_annotated_path: str, original_image_path: str) -> Optional[str]:
+        """Save annotated image to enhanced folder.
+        
+        Args:
+            temp_annotated_path: Path to temporary annotated image
+            original_image_path: Original image path for naming
+            
+        Returns:
+            Path to saved annotated image or None if failed
+        """
+        try:
+            import shutil
+            from pathlib import Path
+            
+            # Ensure enhanced directory exists
+            os.makedirs('enhanced', exist_ok=True)
+            
+            # Generate filename for annotated image
+            original_name = Path(original_image_path).stem
+            annotated_filename = f"{original_name}_enhanced_annotated.jpg"
+            annotated_path = f"enhanced/{annotated_filename}"
+            
+            # Copy the annotated image to enhanced folder
+            shutil.copy2(temp_annotated_path, annotated_path)
+            
+            if self.enable_logging:
+                print(f"Annotated image saved: {annotated_path}")
+            
+            return annotated_path
+        except Exception as e:
+            if self.enable_logging:
+                print(f"Failed to save annotated image: {str(e)}")
+            return None
     
     def get_statistics(self) -> Dict[str, Any]:
         """Get agent performance statistics.

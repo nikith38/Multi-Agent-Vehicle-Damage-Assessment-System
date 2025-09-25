@@ -132,6 +132,34 @@ class ImageEnhancementAgent:
             if self.enable_logging:
                 self.logger.info(f"Tracking intermediate file: {file_path}")
     
+    def _move_to_enhanced_folder(self, file_path):
+        """Move enhanced image to enhanced folder and return new path."""
+        from pathlib import Path
+        import shutil
+        
+        if not file_path or not os.path.exists(file_path):
+            return file_path
+        
+        try:
+            # Create enhanced folder if it doesn't exist
+            enhanced_dir = Path("enhanced")
+            enhanced_dir.mkdir(exist_ok=True)
+            
+            # Get filename and move to enhanced folder
+            file_name = Path(file_path).name
+            new_path = enhanced_dir / file_name
+            
+            shutil.move(file_path, new_path)
+            
+            if self.enable_logging:
+                self.logger.info(f"Moved enhanced image to: {new_path}")
+            
+            return str(new_path)
+        except Exception as e:
+            if self.enable_logging:
+                self.logger.error(f"Failed to move file to enhanced folder: {e}")
+            return file_path
+    
     def _extract_output_path_from_response(self, tool_output):
         """Extract output file path from tool response."""
         try:
@@ -213,6 +241,7 @@ class ImageEnhancementAgent:
     def _generate_final_output_json(self, enhanced_image_path, quality_score=None):
         """Generate final output JSON file with enhancement results."""
         import json
+        from pathlib import Path
         
         # Static mapping of tools to image quality issues
         TOOL_TO_ISSUE_MAPPING = {
@@ -244,12 +273,19 @@ class ImageEnhancementAgent:
             "processable": True
         }
         
-        # Generate output filename based on enhanced image
+        # Generate output filename in tests folder (not enhanced folder)
         if enhanced_image_path:
-            base_name = os.path.splitext(enhanced_image_path)[0]
-            output_file = f"{base_name}_output.json"
+            # Extract original filename from enhanced path
+            enhanced_path = Path(enhanced_image_path)
+            # Handle different filename patterns more robustly
+            name_parts = enhanced_path.stem.split('_')  # Use stem to exclude extension
+            if len(name_parts) >= 2:
+                original_name = name_parts[0] + '_' + name_parts[1]  # e.g., front_left-18
+            else:
+                original_name = enhanced_path.stem  # Use the full stem if splitting fails
+            output_file = f"tests/{original_name}_enhancement_output.json"
         else:
-            output_file = "enhancement_output.json"
+            output_file = "tests/enhancement_output.json"
         
         # Write JSON file
         try:
@@ -325,6 +361,10 @@ class ImageEnhancementAgent:
             if self.enable_logging:
                 self._log_execution_summary(response, total_execution_time)
             
+            # Move final enhanced image to enhanced folder
+            if final_output_file:
+                final_output_file = self._move_to_enhanced_folder(final_output_file)
+            
             # Clean up intermediate files, keeping only the final result
             if len(self.intermediate_files) > 0:
                 if self.enable_logging:
@@ -337,6 +377,9 @@ class ImageEnhancementAgent:
             
             # Generate final output JSON
             self._generate_final_output_json(final_output_file, quality_score)
+            
+            # Add enhanced image path to response for other agents
+            response['enhanced_image_path'] = final_output_file
             
             return response
         except Exception as e:

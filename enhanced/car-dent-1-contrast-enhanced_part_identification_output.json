@@ -1,0 +1,23 @@
+{
+    "success": true,
+    "damaged_parts": [
+        {
+            "damage_id": "D01",
+            "part_name": "rear fender (left)",
+            "part_id": "P012",
+            "damage_type": "dent",
+            "damage_percentage": 40,
+            "bbox": [
+                83.92,
+                3.58,
+                306.28,
+                345.96
+            ],
+            "confidence": 0.87,
+            "location_description": "lower section near the wheel arch"
+        }
+    ],
+    "total_parts_identified": 1,
+    "processing_time": 0.0,
+    "annotated_image_path": "enhanced/car-dent-1-contrast-enhanced_enhanced_annotated.jpg"
+}

@@ -125,6 +125,9 @@ class DamageDetectionAgent:
                     f"in {processing_time:.2f}s"
                 )
             
+            # Save output JSON file
+            self._save_output_json(result, image_path)
+            
             return result
             
         except Exception as e:
@@ -266,6 +269,34 @@ class DamageDetectionAgent:
             result['enhancement_metadata'] = enhancement_metadata
         
         return result
+    
+    def _save_output_json(self, result: Dict[str, Any], image_path: str) -> Optional[str]:
+        """Save detection results to JSON file.
+        
+        Args:
+            result: Detection results dictionary
+            image_path: Original image path for naming the output file
+            
+        Returns:
+            Path to saved JSON file or None if failed
+        """
+        try:
+            # Generate output filename based on image path
+            base_name = os.path.splitext(image_path)[0]
+            output_file = f"{base_name}_damage_detection_output.json"
+            
+            # Write JSON file
+            with open(output_file, 'w') as f:
+                json.dump(result, f, indent=4)
+            
+            if self.enable_logging:
+                self.logger.info(f"Damage detection output saved: {output_file}")
+            
+            return output_file
+        except Exception as e:
+            if self.enable_logging:
+                self.logger.error(f"Failed to save output JSON: {str(e)}")
+            return None
     
     def get_statistics(self) -> Dict[str, Any]:
         """Get processing statistics."""

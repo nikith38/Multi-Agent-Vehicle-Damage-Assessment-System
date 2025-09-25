@@ -1,0 +1,10 @@
+{
+    "quality_score": 0.7853403995458385,
+    "issues": [
+        "blur",
+        "low_contrast",
+        "low_light"
+    ],
+    "enhanced_image": "enhanced\\car-dent-1-contrast-enhanced.jpg",
+    "processable": true
+}

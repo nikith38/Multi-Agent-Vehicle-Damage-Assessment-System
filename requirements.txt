@@ -31,3 +31,7 @@ tqdm>=4.65.0       # For progress bars
 # Development and testing
 pytest>=7.4.0
 pytest-asyncio>=0.21.0
+
+# LangGraph for orchestration
+langgraph>=0.0.40
+typeguard>=4.0.0

@@ -132,6 +132,10 @@ class SeverityAssessmentAgent:
                 print(f"Safety concerns: {len(assessment.safety_concerns)}")
                 print(f"Processing time: {assessment_dict['processing_time']:.2f}s")
             
+            # Save output JSON file
+            image_path = damage_detection_results.get('image_path', 'unknown')
+            self._save_output_json(assessment_dict, image_path)
+            
             return assessment_dict
             
         except Exception as e:
@@ -216,6 +220,46 @@ class SeverityAssessmentAgent:
         
         if self.enable_logging:
             print("Statistics reset successfully")
+    
+    def _save_output_json(self, result: Dict[str, Any], image_path: str) -> Optional[str]:
+        """Save severity assessment results to JSON file.
+        
+        Args:
+            result: Severity assessment results dictionary
+            image_path: Original image path for naming the output file
+            
+        Returns:
+            Path to saved JSON file or None if failed
+        """
+        try:
+            # Generate output filename based on image path
+            # If image_path is in enhanced folder, use that for naming
+            if 'enhanced' in image_path:
+                base_name = os.path.splitext(image_path)[0]
+            else:
+                # For original images, create enhanced folder path
+                base_name = os.path.splitext(image_path)[0]
+                if not base_name.startswith('enhanced'):
+                    filename = os.path.basename(base_name)
+                    base_name = f"enhanced/{filename}_enhanced"
+            
+            output_file = f"{base_name}_severity_assessment_output.json"
+            
+            # Ensure enhanced directory exists
+            os.makedirs('enhanced', exist_ok=True)
+            
+            # Write JSON file
+            with open(output_file, 'w') as f:
+                json.dump(result, f, indent=4)
+            
+            if self.enable_logging:
+                print(f"Severity assessment output saved: {output_file}")
+            
+            return output_file
+        except Exception as e:
+            if self.enable_logging:
+                print(f"Failed to save severity assessment output JSON: {str(e)}")
+            return None
 
 
 def create_severity_assessment_agent(openai_api_key: Optional[str] = None, **kwargs) -> SeverityAssessmentAgent:
